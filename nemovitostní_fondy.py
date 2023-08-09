@@ -172,7 +172,7 @@ left_column, right_column = st.columns([2,5])
 
 # Vytvoření první tabulky pouze s obrázkovým sloupcem "Poskytovatel"
 with st.container():
-        left_column.dataframe(filtered_data[['Poskytovatel']], hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+        left_column.dataframe(filtered_data[['Poskytovatel']], hide_index=True, column_config={"Poskytovatel": image_column}, height=428,width=200)
 
 # Vytvoření druhé tabulky bez sloupce "Poskytovatel"
 with st.container():
