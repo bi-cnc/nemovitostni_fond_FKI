@@ -158,12 +158,13 @@ if st.sidebar.checkbox("Počet nemovitostí", False, key="checkbox_pocet_nemovit
         filtered_data = filtered_data[filtered_data["Počet nemovitostí"] > 20]
 
 
-
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
 
+filtered_data.set_index('Poskytovatel', inplace=True)
+
 # Display the filtered data
-st.dataframe(filtered_data,hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+st.dataframe(filtered_data, column_config={"Poskytovatel": image_column}, height=428)
 
 
