@@ -19,7 +19,7 @@ def load_data():
 df = load_data()
 
 # Convert image to Base64
-def image_to_base64(img_path, output_size=(441, 100)):
+def image_to_base64(img_path, output_size=(450, 100)):
     # Open an image file
     with Image.open(img_path) as img:
         # Resize image
@@ -165,16 +165,5 @@ if st.sidebar.checkbox("Počet nemovitostí", False, key="checkbox_pocet_nemovit
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
 
-# ... [zbytek vašeho kódu zůstává stejný]
-
-# Vytvoření kontejnerů pro obě tabulky
-left_column, right_column = st.columns([2,5])
-
-# Vytvoření první tabulky pouze s obrázkovým sloupcem "Poskytovatel"
-with st.container():
-        left_column.dataframe(filtered_data[['Poskytovatel']], hide_index=True, column_config={"Poskytovatel": image_column}, height=428,width=200)
-
-# Vytvoření druhé tabulky bez sloupce "Poskytovatel"
-with st.container():
-        right_column.dataframe(filtered_data.drop(columns=["Poskytovatel"]), hide_index=True, height=428)
-
+# Display the filtered data
+st.dataframe(filtered_data,hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
