@@ -82,6 +82,26 @@ with col2:
             filtered_data = filtered_data[filtered_data["Výnos 2021 (v %)"] > 10]
 
 
+# Filtr pro Výnos 2020 (v %) v prvním sloupci
+with col3:
+    if st.checkbox(label="Výnos 2020",value = False, key="checkbox_2020"):
+        ranges = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
+        selected_range_2020 = st.selectbox("Výnos 2020 (v %)", ranges)
+        
+        # Přesuňte logiku filtru dovnitř podmínky zaškrtávacího políčka
+        if "Menší než 0 %" == selected_range_2020:
+            filtered_data = filtered_data[filtered_data["Výnos 2020 (v %)"] < 0]
+        
+        elif "0 % - 5 %" == selected_range_2020:
+            filtered_data = filtered_data[(filtered_data["Výnos 2020 (v %)"] >= 0) & (filtered_data["Výnos 2020 (v %)"] <= 5)]
+        
+        elif "5 % - 10 %" == selected_range_2020:
+            filtered_data = filtered_data[(filtered_data["Výnos 2020 (v %)"] > 5) & (filtered_data["Výnos 2020 (v %)"] <= 10)]
+        
+        elif "Více než 10 %" == selected_range_2020:
+            filtered_data = filtered_data[filtered_data["Výnos 2020 (v %)"] > 10]
+
+
 
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
