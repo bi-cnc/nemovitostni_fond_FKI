@@ -19,7 +19,7 @@ def load_data():
 df = load_data()
 
 # Convert image to Base64
-def image_to_base64(img_path, output_size=(450, 100)):
+def image_to_base64(img_path, output_size=(441, 100)):
     # Open an image file
     with Image.open(img_path) as img:
         # Resize image
@@ -161,9 +161,24 @@ if st.sidebar.checkbox("Počet nemovitostí", False, key="checkbox_pocet_nemovit
 
 
 
-# Configure the image column
-image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
+# Vytvořte prázdný obrázek s bílým pozadím
+def create_empty_image(width, height):
+    data = np.zeros((height, width, 3), dtype=np.uint8)
+    data.fill(255)  # Bílé pozadí
+    img = PIL.Image.fromarray(data, 'RGB')
+    return img
 
-# Display the filtered data
-st.dataframe(filtered_data,hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+# Vytvořte dva sloupce
+cols = st.columns([1,5])
+
+# Vložte prázdný obrázek pro posunutí obrázků dolů
+empty_space = create_empty_image(100, 20)  # Můžete upravit výšku obrázku podle potřeby
+cols[0].image(empty_space)
+
+# Zobrazte loga v prvním sloupci
+cols[0].image(filtered_data["Poskytovatel"].tolist(), width=100)
+
+# Zobrazte ostatní data v druhém sloupci
+cols[1].dataframe(filtered_data.drop(columns=["Poskytovatel"]), hide_index=True, height=428)
+
