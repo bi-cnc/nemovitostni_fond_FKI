@@ -13,7 +13,7 @@ import numpy as np
 # Load the data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('df = pd.read_csv('https://raw.githubusercontent.com/bi-cnc/nemovitostni_fond_FKI/master/FKI_fondy_streamlit.csv')
+    df = pd.read_csv('https://raw.githubusercontent.com/bi-cnc/nemovitostni_fond_FKI/master/FKI_fondy_streamlit.csv')
     return df
 
 df = load_data()
