@@ -13,7 +13,7 @@ import numpy as np
 # Load the data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('https://raw.githubusercontent.com/bi-cnc/nemovitostni_fond_FKI/master/FKI_fondy_streamlit.csv')
+    df = pd.read_csv("FKI_fondy_streamlit.csv")
     return df
 
 df = load_data()
@@ -165,7 +165,16 @@ if st.sidebar.checkbox("Počet nemovitostí", False, key="checkbox_pocet_nemovit
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
 
-# Display the filtered data
-st.dataframe(filtered_data,hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+# ... [zbytek vašeho kódu zůstává stejný]
 
+# Vytvoření kontejnerů pro obě tabulky
+left_column, right_column = st.columns([2,5])
+
+# Vytvoření první tabulky pouze s obrázkovým sloupcem "Poskytovatel"
+with st.container():
+        left_column.dataframe(filtered_data[['Poskytovatel']], hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+
+# Vytvoření druhé tabulky bez sloupce "Poskytovatel"
+with st.container():
+        right_column.dataframe(filtered_data.drop(columns=["Poskytovatel"]), hide_index=True, height=428)
 
