@@ -8,14 +8,88 @@ from pandas.api.types import (
     is_numeric_dtype,
     is_object_dtype,
 )
+import streamlit as st
+from PIL import Image
+import base64
+import io
 
-st.title("Auto Filter Dataframes in Streamlit")
-st.write(
-    """This app accomodates the blog [here](<https://blog.streamlit.io/auto-generate-a-dataframe-filtering-ui-in-streamlit-with-filter_dataframe/>)
-    and walks you through one example of how the Streamlit
-    Data Science Team builds add-on functions to Streamlit.
-    """
-)
+# Load the data
+@st.cache_data
+def load_data():
+    df = pd.read_csv("FKI_fondy_streamlit.csv")
+    return df
+
+df = load_data()
+
+df.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
+
+
+# Convert image to Base64
+def image_to_base64(img_path, output_size=(441, 100)):
+    # Open an image file
+    with Image.open(img_path) as img:
+        # Resize image
+        img = img.resize(output_size)
+        # Convert image to PNG and then to base64
+        buffered = io.BytesIO()
+        img.save(buffered, format="PNG")
+        return f"data:image/png;base64,{base64.b64encode(buffered.getvalue()).decode()}"
+    
+
+# Apply conversion function to the column with image paths
+df["Poskytovatel"] = df["Poskytovatel"].apply(image_to_base64)
+
+
+import re
+
+def dominant_category(text):
+    # Vytvořte slovník s klíčovými slovy pro každou kategorii
+    categories = {
+        "kancelářské": ["kancelářské", "kancelář", "administrativní","office"],
+        "výrobní": ["výrobní", "výroba"],
+        "logistické": ["logistika", "logistické","logistika a výroba"],
+        "obchodní": ["obchodní"],
+        "retail": ["retail"],
+        "rezidenční": ["rezidenční"],
+        "průmysl/logistika": ["průmysl/logistika"]
+    }
+    
+    # Pokud text není řetězec, vrať "Neznámé"
+    if not isinstance(text, str):
+        return "Neznámé"
+    
+    # Rozdělení řetězce na jednotlivé páry (procento, kategorie)
+    pairs = re.findall(r'(\d+\.?\d* %) ([\w\s]+)', text)
+    dominant_percentage = 0
+    dominant_category = None
+    
+    # Pro každý pár extrakce procenta a identifikace kategorie
+    for percentage, category in pairs:
+        percentage = float(percentage.replace(' %', '').replace(',', '.'))
+        for key, keywords in categories.items():
+            if any(keyword in category for keyword in keywords):
+                if percentage > dominant_percentage:
+                    dominant_percentage = percentage
+                    dominant_category = key
+                    
+
+
+    # Pokud dominantní kategorie nemá více než 50 %, vrať "Vyrovnané"
+    if dominant_percentage <= 50:
+        return "Vyrovnané"
+    elif dominant_category:
+        return f"Převažuje {dominant_category}"
+    else:
+        return "jiné"
+
+
+df["Rozložení portfolia"] = df["Portfolio"].apply(dominant_category)
+
+
+
+
+st.title("Fondy kvalifikovaných investorů")
+
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -27,7 +101,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify = st.checkbox("Add filters")
+    modify = st.checkbox("Přidat filtrování")
 
     if not modify:
         return df
@@ -48,15 +122,20 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     modification_container = st.container()
 
     with modification_container:
-        to_filter_columns = st.multiselect("Filter dataframe on", df.columns)
+        # Skryjeme sloupec "Portfolio" v nabídce
+        available_columns = [col for col in df.columns if col != "Portfolio"]
+        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns)
+        
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
-            # Treat columns with < 10 unique values as categorical
-            if is_categorical_dtype(df[column]) or df[column].nunique() < 10:
+    
+        # Určení, zda je proměnná kategorická na základě nečíselných hodnot
+            if df[column].apply(lambda x: not pd.api.types.is_number(x)).any():
+                unique_values = df[column].dropna().unique()
                 user_cat_input = right.multiselect(
-                    f"Values for {column}",
-                    df[column].unique(),
-                    default=list(df[column].unique()),
+                column,
+                unique_values,
+                default=list(unique_values)
                 )
                 df = df[df[column].isin(user_cat_input)]
             elif is_numeric_dtype(df[column]):
@@ -64,7 +143,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 _max = float(df[column].max())
                 step = (_max - _min) / 100
                 user_num_input = right.slider(
-                    f"Values for {column}",
+                    column,
                     min_value=_min,
                     max_value=_max,
                     value=(_min, _max),
@@ -73,7 +152,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 df = df[df[column].between(*user_num_input)]
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
-                    f"Values for {column}",
+                    column,
                     value=(
                         df[column].min(),
                         df[column].max(),
@@ -93,33 +172,15 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-import streamlit as st
-import pandas as pd
-from PIL import Image
-import base64
-import io
 
-# Load the data
-@st.cache_data
-def load_data():
-    df = pd.read_csv("FKI_fondy_streamlit.csv")
-    return df
+# Configure the image column
+image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
-df = load_data()
 
-# Convert image to Base64
-def image_to_base64(img_path, output_size=(441, 100)):
-    # Open an image file
-    with Image.open(img_path) as img:
-        # Resize image
-        img = img.resize(output_size)
-        # Convert image to PNG and then to base64
-        buffered = io.BytesIO()
-        img.save(buffered, format="PNG")
-        return f"data:image/png;base64,{base64.b64encode(buffered.getvalue()).decode()}"
-    
+df.set_index('Poskytovatel', inplace=True)
 
-# Apply conversion function to the column with image paths
-df["Poskytovatel"] = df["Poskytovatel"].apply(image_to_base64)
+# Display the filtered data
 
-st.dataframe(filter_dataframe(df))
+filtered_df = filter_dataframe(df)
+
+st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
