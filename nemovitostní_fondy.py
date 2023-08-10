@@ -38,24 +38,11 @@ filtered_data = df
 # Sidebar filters
 st.header("Filtry")
 
-# Definujeme responzivní CSS
-styles = """
-    <style>
-        /* Pro obrazovky menší než 600px */
-        @media (max-width: 400px) {
-            .filter-group {
-                flex-direction: column !important;
-            }
-        }
-    </style>
-"""
 
-# Vložíme styly do Streamlitu
-st.markdown(styles, unsafe_allow_html=True)
 
 # Vytvoření 2 sloupců pro filtry (můžete si upravit počet podle potřeby)
 with st.container():
-    col1, col2 = st.columns(2)
+    col1 = st.columns()
 
     # Filtr pro Výnos 2022 (v %) v prvním sloupci
     with col1:
@@ -79,6 +66,9 @@ with st.container():
 
 
 # Filter for Výnos 2021 (v %)
+with st.container():
+    col2 = st.columns()
+
     with col2:
         if st.checkbox(label="Výnos 2021",value = False, key="checkbox_2021"):
             ranges_2021 = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
