@@ -1,5 +1,96 @@
 
+import pandas as pd
+import streamlit as st
+import streamlit.components.v1 as components
+from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,
+)
 
+st.title("Auto Filter Dataframes in Streamlit")
+st.write(
+    """This app accomodates the blog [here](<https://blog.streamlit.io/auto-generate-a-dataframe-filtering-ui-in-streamlit-with-filter_dataframe/>)
+    and walks you through one example of how the Streamlit
+    Data Science Team builds add-on functions to Streamlit.
+    """
+)
+
+def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds a UI on top of a dataframe to let viewers filter columns
+
+    Args:
+        df (pd.DataFrame): Original dataframe
+
+    Returns:
+        pd.DataFrame: Filtered dataframe
+    """
+    modify = st.checkbox("Add filters")
+
+    if not modify:
+        return df
+
+    df = df.copy()
+
+    # Try to convert datetimes into a standard format (datetime, no timezone)
+    for col in df.columns:
+        if is_object_dtype(df[col]):
+            try:
+                df[col] = pd.to_datetime(df[col])
+            except Exception:
+                pass
+
+        if is_datetime64_any_dtype(df[col]):
+            df[col] = df[col].dt.tz_localize(None)
+
+    modification_container = st.container()
+
+    with modification_container:
+        to_filter_columns = st.multiselect("Filter dataframe on", df.columns)
+        for column in to_filter_columns:
+            left, right = st.columns((1, 20))
+            # Treat columns with < 10 unique values as categorical
+            if is_categorical_dtype(df[column]) or df[column].nunique() < 10:
+                user_cat_input = right.multiselect(
+                    f"Values for {column}",
+                    df[column].unique(),
+                    default=list(df[column].unique()),
+                )
+                df = df[df[column].isin(user_cat_input)]
+            elif is_numeric_dtype(df[column]):
+                _min = float(df[column].min())
+                _max = float(df[column].max())
+                step = (_max - _min) / 100
+                user_num_input = right.slider(
+                    f"Values for {column}",
+                    min_value=_min,
+                    max_value=_max,
+                    value=(_min, _max),
+                    step=step,
+                )
+                df = df[df[column].between(*user_num_input)]
+            elif is_datetime64_any_dtype(df[column]):
+                user_date_input = right.date_input(
+                    f"Values for {column}",
+                    value=(
+                        df[column].min(),
+                        df[column].max(),
+                    ),
+                )
+                if len(user_date_input) == 2:
+                    user_date_input = tuple(map(pd.to_datetime, user_date_input))
+                    start_date, end_date = user_date_input
+                    df = df.loc[df[column].between(start_date, end_date)]
+            else:
+                user_text_input = right.text_input(
+                    f"Substring or regex in {column}",
+                )
+                if user_text_input:
+                    df = df[df[column].astype(str).str.contains(user_text_input)]
+
+    return df
 
 
 import streamlit as st
@@ -31,140 +122,4 @@ def image_to_base64(img_path, output_size=(441, 100)):
 # Apply conversion function to the column with image paths
 df["Poskytovatel"] = df["Poskytovatel"].apply(image_to_base64)
 
-
-# Sidebar filters
-st.sidebar.header("Filtry")
-
-# Initialize filtered_data as original data
-filtered_data = df
-
-# Filter for Výnos 2022 (v %)
-
-if st.sidebar.checkbox("Výnos 2022 (v %)", False, key="checkbox_2022"):
-    ranges = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
-    selected_range = st.sidebar.selectbox("Výnos 2022 (v %)", ranges)
-
-    if "Menší než 0 %" == selected_range:
-        filtered_data = filtered_data[filtered_data["Výnos 2022 (v %)"] < 0]
-    
-    elif "0 % - 5 %" == selected_range:
-        filtered_data = filtered_data[(filtered_data["Výnos 2022 (v %)"] >= 0) & (filtered_data["Výnos 2022 (v %)"] <= 5)]
-        
-    elif "5 % - 10 %" == selected_range:
-        filtered_data = filtered_data[(filtered_data["Výnos 2022 (v %)"] > 5) & (filtered_data["Výnos 2022 (v %)"] <= 10)]
-        
-    elif "Více než 10 %" == selected_range:
-        filtered_data = filtered_data[filtered_data["Výnos 2022 (v %)"] > 10]
-
-
-
-# Filter for Výnos 2021 (v %)
-if st.sidebar.checkbox("Výnos 2021 (v %)", False, key="checkbox_2021"):
-    ranges_2021 = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
-    selected_range_2021 = st.sidebar.selectbox("Výnos 2021 (v %)", ranges_2021)
-
-    if "Menší než 0 %" == selected_range_2021:
-        filtered_data = filtered_data[filtered_data["Výnos 2021 (v %)"] < 0]
-    
-    elif "0 % - 5 %" == selected_range_2021:
-        filtered_data = filtered_data[(filtered_data["Výnos 2021 (v %)"] >= 0) & (filtered_data["Výnos 2021 (v %)"] <= 5)]
-        
-    elif "5 % - 10 %" == selected_range_2021:
-        filtered_data = filtered_data[(filtered_data["Výnos 2021 (v %)"] > 5) & (filtered_data["Výnos 2021 (v %)"] <= 10)]
-        
-    elif "Více než 10 %" == selected_range_2021:
-        filtered_data = filtered_data[filtered_data["Výnos 2021 (v %)"] > 10]
-
-
-# Filter for Výnos 2020 (v %)
-if st.sidebar.checkbox("Výnos 2020 (v %)", False, key="checkbox_2020"):
-    ranges_2020 = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
-    selected_range_2020 = st.sidebar.selectbox("Výnos 2020 (v %)", ranges_2020)
-
-    if "Menší než 0 %" == selected_range_2020:
-        filtered_data = filtered_data[filtered_data["Výnos 2020 (v %)"] < 0]
-    
-    elif "0 % - 5 %" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Výnos 2020 (v %)"] >= 0) & (filtered_data["Výnos 2020 (v %)"] <= 5)]
-        
-    elif "5 % - 10 %" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Výnos 2020 (v %)"] > 5) & (filtered_data["Výnos 2020 (v %)"] <= 10)]
-        
-    elif "Více než 10 %" == selected_range_2020:
-        filtered_data = filtered_data[filtered_data["Výnos 2020 (v %)"] > 10]
-
-
-# Filter for Výnos od založení (% p.a.)
-if st.sidebar.checkbox("Výnos od založení (% p.a.)", False, key="checkbox_vynos_od_zalozeni"):
-    ranges_zalozeni = ["Více než 10 %","5 % - 10 %", "0 % - 5 %","Menší než 0 %"]
-    selected_range_2020 = st.sidebar.selectbox("Výnos od založení (% p.a.)", ranges_zalozeni)
-
-    if "Menší než 0 %" == selected_range_2020:
-        filtered_data = filtered_data[filtered_data["Výnos od založení (% p.a.)"] < 0]
-    
-    elif "0 % - 5 %" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Výnos od založení (% p.a.)"] >= 0) & (filtered_data["Výnos od založení (% p.a.)"] <= 5)]
-        
-    elif "5 % - 10 %" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Výnos od založení (% p.a.)"] > 5) & (filtered_data["Výnos od založení (% p.a.)"] <= 10)]
-        
-    elif "Více než 10 %" == selected_range_2020:
-        filtered_data = filtered_data[filtered_data["Výnos od založení (% p.a.)"] > 10]
-
-
-# Filter for TER (v %)
-if st.sidebar.checkbox("TER (v %)", False, key="checkbox_TER"):
-    min_2022 = st.sidebar.number_input("Min TER (v %)", float(df["TER (v %)"].min()))
-    max_2022 = st.sidebar.number_input("Max TER (v %)", float(df["TER (v %)"].max()))
-    filtered_data = filtered_data[filtered_data["TER (v %)"].between(min_2022, max_2022)]
-
-# Filter for LTV (v %)
-if st.sidebar.checkbox("LTV (v %)", False, key="checkbox_LTV"):
-    min_2022 = st.sidebar.number_input("Min LTV (v %)", float(df["LTV (v %)"].min()))
-    max_2022 = st.sidebar.number_input("Max LTV (v %)", float(df["LTV (v %)"].max()))
-    filtered_data = filtered_data[filtered_data["LTV (v %)"].between(min_2022, max_2022)]
-
-# Filter for WAULT
-if st.sidebar.checkbox("WAULT", False, key="checkbox_WAULT"):
-    min_2022 = st.sidebar.number_input("Min WAULT", float(df["WAULT"].min()))
-    max_2022 = st.sidebar.number_input("Max WAULT", float(df["WAULT"].max()))
-    filtered_data = filtered_data[filtered_data["WAULT"].between(min_2022, max_2022)]
-
-# Filter for YIELD (v %)
-if st.sidebar.checkbox("YIELD (v %)", False, key="checkbox_YIELD"):
-    min_2022 = st.sidebar.number_input("Min YIELD (v %)", float(df["YIELD (v %)"].min()))
-    max_2022 = st.sidebar.number_input("Max YIELD (v %)", float(df["YIELD (v %)"].max()))
-    filtered_data = filtered_data[filtered_data["YIELD (v %)"].between(min_2022, max_2022)]
-
-
-# Filter for NAV (v mld. Kč)
-if st.sidebar.checkbox("NAV (v mld. Kč)", False, key="checkbox_NAV"):
-    min_2022 = st.sidebar.number_input("Min NAV (v mld. Kč)", float(df["NAV (v mld. Kč)"].min()))
-    max_2022 = st.sidebar.number_input("Max NAV (v mld. Kč)", float(df["NAV (v mld. Kč)"].max()))
-    filtered_data = filtered_data[filtered_data["NAV (v mld. Kč)"].between(min_2022, max_2022)]
-
-# Filter for Počet nemovitostí
-if st.sidebar.checkbox("Počet nemovitostí", False, key="checkbox_pocet_nemovitosti"):
-    ranges_2020 = ["Více než 20","10 - 20", "0 - 10"]
-    selected_range_2020 = st.sidebar.selectbox("Počet nemovitostí", ranges_2020)
-    
-    if "0 - 10" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Počet nemovitostí"] >= 0) & (filtered_data["Počet nemovitostí"] <= 10)]
-        
-    elif "10 - 20" == selected_range_2020:
-        filtered_data = filtered_data[(filtered_data["Počet nemovitostí"] > 10) & (filtered_data["Počet nemovitostí"] <= 20)]
-        
-    elif "Více než 20" == selected_range_2020:
-        filtered_data = filtered_data[filtered_data["Počet nemovitostí"] > 20]
-
-
-# Configure the image column
-image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
-
-
-filtered_data.set_index('Poskytovatel', inplace=True)
-
-# Display the filtered data
-st.dataframe(filtered_data,hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
-
-
+st.dataframe(filter_dataframe(df))
