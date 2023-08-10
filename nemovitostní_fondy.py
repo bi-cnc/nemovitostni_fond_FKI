@@ -38,6 +38,21 @@ filtered_data = df
 # Sidebar filters
 st.header("Filtry")
 
+# Definujeme responzivní CSS
+styles = """
+    <style>
+        /* Pro obrazovky menší než 600px */
+        @media (max-width: 400px) {
+            .filter-group {
+                flex-direction: column !important;
+            }
+        }
+    </style>
+"""
+
+# Vložíme styly do Streamlitu
+st.markdown(styles, unsafe_allow_html=True)
+
 # Vytvoření 2 sloupců pro filtry (můžete si upravit počet podle potřeby)
 with st.container():
     col1, col2 = st.columns(2)
