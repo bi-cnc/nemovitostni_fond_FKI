@@ -63,11 +63,6 @@ def convert_yield_to_float(yield_value):
     return None
 
 
-def extract_number_from_string(s):
-    numbers = re.findall(r"(\d+)", s)
-    if numbers:
-        return int(numbers[0])
-    return 0
 
 
 
@@ -195,16 +190,6 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
-
-            if column == "Rozložení portfolia":
-                unique_portfolio_values = df[column].dropna().unique()
-                user_portfolio_input = right.multiselect(
-                "Rozložení portfolia",
-                unique_portfolio_values,
-                default=list(unique_portfolio_values)
-                )
-                df = df[df[column].isin(user_portfolio_input)]
-                continue
             
             if column == "Cílený roční výnos":
                 user_yield_input = right.multiselect(
@@ -239,26 +224,14 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 df = df[df[column].isin(user_cat_input)]
                 continue  # pokračujte dalším sloupcem
 
-            if column == "Lhůta pro zpětný odkup":
-                    unique_values = sorted(df[column].dropna().unique(), key=extract_number_from_string)
-                    user_cat_input = right.multiselect(
-                    column,
-                    unique_values,
-                    default=list(unique_values)
-                )
-                    df = df[df[column].isin(user_cat_input)]
-
             if df[column].apply(lambda x: not pd.api.types.is_number(x)).any():
                 unique_values = df[column].dropna().unique()
 
             elif is_numeric_dtype(df[column]):
-                _min = df[column].min()
-                _max = df[column].max()
-                if pd.notna(_min) and pd.notna(_max) and _min != _max:
-                    _min = float(_min)
-                    _max = float(_max)
-                    step = (_max - _min) / 100
-                    user_num_input = right.slider(
+                _min = float(df[column].min())
+                _max = float(df[column].max())
+                step = (_max - _min) / 100
+                user_num_input = right.slider(
                     column,
                     min_value=_min,
                     max_value=_max,
@@ -266,7 +239,6 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                     step=step,
                 )
                 df = df[df[column].between(*user_num_input)]
-
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
                     column,
@@ -289,43 +261,14 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-
-df.rename(columns={"Výnos 2022 (v %)":"Výnos 2022","Výnos 2021 (v %)":"Výnos 2021","Výnos 2020 (v %)":"Výnos 2020","Výnos od založení (% p.a.)":"Výnos od založení","TER (v %)":"TER","LTV (v %)":"LTV","YIELD (v %)":"YIELD"},inplace=True)
-
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
-vynos22_column = st.column_config.NumberColumn(label="Výnos 2022", format="%.2f %%")
-vynos21_column = st.column_config.NumberColumn(label="Výnos 2021", format="%.2f %%")
-vynos20_column = st.column_config.NumberColumn(label="Výnos 2020", format="%.2f %%")
-vynos_all_column = st.column_config.NumberColumn(label="Výnos od založení", format="%.2f %% p.a.")
-vynosTER_column = st.column_config.NumberColumn(label="TER", format="%.2f %%")
-vynosLTV_column = st.column_config.NumberColumn(label="LTV", format="%.2f %%")
-vynosYIELD_column = st.column_config.NumberColumn(label="YIELD", format="%.2f %%")
 
-pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
-            max_value=50)
 
 df.set_index('Poskytovatel', inplace=True)
 
 # Display the filtered data
 
 filtered_df = filter_dataframe(df)
-filtered_df.sort_values("Výnos 2022",ascending=False,inplace=True)
 
-
-if not filtered_df.empty:
-    st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, 
-                 column_config={"Poskytovatel": image_column,
-                                "Výnos 2022":vynos22_column,
-                                "Výnos 2021":vynos21_column,
-                                "Výnos 2020":vynos20_column,
-                                "Výnos od založení":vynos_all_column,
-                                "TER (v %)":vynosTER_column,
-                                "LTV (v %)":vynosLTV_column,
-                                "YIELD (v %)": vynosYIELD_column,
-                                "Počet nemovitostí":pocet_nemov_column
-                                }, height=428)
-else:
-    st.warning("Žádná data neodpovídají zvoleným filtrům.")
-
-
+st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
