@@ -264,7 +264,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
-nazev_column = st.column_config.TextColumn(label="Název fondu", width="small")
+nazev_column = st.column_config.TextColumn(label="Název fondu", width="medium")
 
 
 df.set_index('Poskytovatel', inplace=True)
