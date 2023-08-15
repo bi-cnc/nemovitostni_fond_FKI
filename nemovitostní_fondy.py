@@ -13,8 +13,6 @@ from PIL import Image
 import base64
 import io
 
-st.set_page_config(layout="wide")
-
 # Load the data
 @st.cache_data
 def load_data():
