@@ -264,6 +264,8 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
 
+nazev_column = st.column_config.TextColumn(label="Název fondu", width="small")
+
 
 df.set_index('Poskytovatel', inplace=True)
 
@@ -271,4 +273,6 @@ df.set_index('Poskytovatel', inplace=True)
 
 filtered_df = filter_dataframe(df)
 
-st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, column_config={"Poskytovatel": image_column}, height=428)
+st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, column_config={"Poskytovatel": image_column,"Název fondu":nazev_column}, height=428)
+
+
