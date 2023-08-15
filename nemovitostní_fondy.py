@@ -305,7 +305,7 @@ vynosYIELD_column = st.column_config.NumberColumn(label="YIELD", format="%.2f %%
 pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
             max_value=50)
 
-nazev_column = st.column_config.TextColumn(label="Název fondu", width="medium")
+nazev_column = st.column_config.TextColumn(label="Název fondu", width="small")
 
 df.set_index('Poskytovatel', inplace=True)
 
