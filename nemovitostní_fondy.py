@@ -275,4 +275,3 @@ filtered_df = filter_dataframe(df)
 
 st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, column_config={"Poskytovatel": image_column,"Název fondu":nazev_column}, height=428)
 
-
