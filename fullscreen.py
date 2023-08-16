@@ -308,15 +308,24 @@ image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium"
 vynos22_column = st.column_config.NumberColumn(label="Výnos 2022", format="%.2f %%")
 vynos21_column = st.column_config.NumberColumn(label="Výnos 2021", format="%.2f %%")
 vynos20_column = st.column_config.NumberColumn(label="Výnos 2020", format="%.2f %%")
+min_invest_column = st.column_config.TextColumn(help="📍**Minimální nutná částka pro vstup do fondu.** Klíčové zejména u FKI, kde je většinou 1 mil. Kč při splnění testu vhodnosti, ale někdy i 2 a více milionů.")
+poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené, ale pro finální výnos zásadní jsou poplatky.** Je třeba znát podmínky pro výstupní poplatky v různých časových horizontech – zejména ty může investor ovlivnit.")
+
+
 vynos_all_column = st.column_config.NumberColumn(label="Výnos od založení", format="%.2f %% p.a.")
-vynosTER_column = st.column_config.NumberColumn(label="TER", format="%.2f %%")
-vynosLTV_column = st.column_config.NumberColumn(label="LTV", format="%.2f %%")
-vynosYIELD_column = st.column_config.NumberColumn(label="YIELD", format="%.2f %%")
+vynosNAV_column = st.column_config.NumberColumn(label="NAV (v mld. Kč) 💬",help="📍**NAV (AUM): Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.**")
+vynosTER_column = st.column_config.NumberColumn(label="TER 💬", help="📍**TER: Celkové roční náklady na správu fondu.** Čím nižší, tím lepší pro investory.", format="%.2f %%")
+vynosLTV_column = st.column_config.NumberColumn(label="LTV 💬", format="%.2f %%",help="📍**LTV: Loan to value – poměr cizího kapitálu k hodnotě nemovitosti.** Vyšší LTV pomáhá fondům dosahovat vyšších výnosů, ale zároveň je třeba říct, že větší úvěrové zatížení s sebou nese i větší riziko, kdyby se nějak dramaticky zvedly úroky z úvěru nebo propadly příjmy z pronájmu ")
+vynosYIELD_column = st.column_config.NumberColumn(label="YIELD 💬", format="%.2f %%",help="📍**YIELD: Poměr čistého ročního nájmu a hodnoty nemovitostí.** Pokud poměříte čistý roční nájem celkovou hodnotou nemovitostí, zjistíte, jakou rentabilitu ty nemovitosti mají, aneb jaké hrubé výnosy dokáže fond generovat z nájmu. Na detailu každého fondu najdete tento údaj již vypočtený pod ukazatelem „Yield“. Zpravidla to bývá mezi 5-7 % p.a. ")
+vynosWAULT_column = st.column_config.NumberColumn(label="WAULT (v letech) 💬", help="📍**WAULT: Průměrná doba do konce nájemních smluv.** Jak dlouhé má v průměru nájemní smlouvy, respektive jaká je průměrná vážená doba do konce platnosti nájemních smluv. Obecně lze říct, že čím delší doba do konce platnosti nájemních smluv, tím lépe, protože o to jistější má fond příjmy. Zpravidla to bývá mezi 3-7 lety.", format="%.2f %%")
+
+
 
 pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
             max_value=50)
 
 nazev_column = st.column_config.TextColumn(label="Název fondu", width="medium")
+rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df.set_index('Poskytovatel', inplace=True)
 
@@ -335,13 +344,23 @@ if not filtered_df.empty:
                                 "Výnos 2021":vynos21_column,
                                 "Výnos 2020":vynos20_column,
                                 "Výnos od založení":vynos_all_column,
-                                "TER (v %)":vynosTER_column,
-                                "LTV (v %)":vynosLTV_column,
-                                "YIELD (v %)": vynosYIELD_column,
+                                "TER":vynosTER_column,
+                                "LTV":vynosLTV_column,
+                                "YIELD": vynosYIELD_column,
                                 "Počet nemovitostí":pocet_nemov_column,
-                                "Název fondu":nazev_column
+                                "Název fondu":nazev_column,
+                                "Portfolio":rozlozeni_column,
+                                "NAV (v mld. Kč)":vynosNAV_column,
+                                "WAULT":vynosWAULT_column,
+                                "Min. investice":min_invest_column,
+                                "Vstupní poplatek":poplatky_column,
+                                "Manažerský poplatek":poplatky_column,
+                                "Výkonnostní poplatek":poplatky_column,
+                                "Výstupní poplatek":poplatky_column,
                                 }, height=428)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
+
 
 
