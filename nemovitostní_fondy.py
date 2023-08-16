@@ -254,18 +254,25 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
             elif is_numeric_dtype(df[column]):
                 _min = df[column].min()
                 _max = df[column].max()
-                if pd.notna(_min) and pd.notna(_max) and _min != _max:
+                if pd.notna(_min) and pd.notna(_max):
                     _min = float(_min)
                     _max = float(_max)
-                    step = (_max - _min) / 100
-                    user_num_input = right.slider(
-                    column,
-                    min_value=_min,
-                    max_value=_max,
-                    value=(_min, _max),
-                    step=step,
-                )
-                df = df[df[column].between(*user_num_input)]
+    
+    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
+                    if _min == _max:
+                        df = df[df[column] == _min]
+                    else:
+                        step = (_max - _min) / 100
+                        if step == 0:
+                            step = 0.01
+                        user_num_input = right.slider(
+                        column,
+                        min_value=_min,
+                        max_value=_max,
+                        value=(_min, _max),
+                        step=step,
+                        )
+                        df = df[df[column].between(*user_num_input)]
 
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
@@ -285,6 +292,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 )
                 if user_text_input:
                     df = df[df[column].astype(str).str.contains(user_text_input)]
+ 
     return df
 
 
@@ -316,6 +324,7 @@ filtered_df.sort_values("Výnos 2022",ascending=False,inplace=True)
 
 
 
+
 if not filtered_df.empty:
     st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, 
                  column_config={"Poskytovatel": image_column,
@@ -331,3 +340,4 @@ if not filtered_df.empty:
                                 }, height=428)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
