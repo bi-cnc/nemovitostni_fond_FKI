@@ -1,4 +1,3 @@
-
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -12,7 +11,6 @@ import streamlit as st
 from PIL import Image
 import base64
 import io
-
 
 # Load the data
 @st.cache_data
@@ -401,6 +399,3 @@ if not filtered_df.empty:
                                 }, height=428)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
-
-
-
