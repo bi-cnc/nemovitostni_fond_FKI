@@ -15,7 +15,6 @@ import io
 
 st.set_page_config(layout="wide")
 
-
 # Load the data
 @st.cache_data
 def load_data():
@@ -44,10 +43,17 @@ df["Poskytovatel"] = df["Poskytovatel"].apply(image_to_base64)
 
 
 # Nahraďte NaN hodnoty "Neuvedeno"
-df["Cílený roční výnos"].fillna("Neuvedeno", inplace=True)
+df["Cílený roční výnos"].fillna("- - -", inplace=True)
+df["Vstupní poplatek"].fillna("- - -", inplace=True)
+df["Manažerský poplatek"].fillna("- - -", inplace=True)
+df["Výkonnostní poplatek"].fillna("- - -", inplace=True)
+df["Výstupní poplatek"].fillna("- - -", inplace=True)
+df["Lhůta pro zpětný odkup"].fillna("- - -", inplace=True)
+df["Portfolio"].fillna("- - -", inplace=True)
+
 
 def convert_yield_to_float(yield_value):
-    if yield_value == "Neuvedeno":
+    if yield_value == "- - -":
         return -1
     if isinstance(yield_value, str):
         # Pokud obsahuje rozsah, vytvoříme kombinovanou hodnotu
@@ -133,8 +139,8 @@ def convert_fee_to_float_simple(fee_value):
 
         # Zkusíme extrahovat čísla z řetězce
         numbers = re.findall(r"(\d+\.?\d*)", fee_value)
-        if not numbers:  # pokud nejsou žádná čísla, vrátíme None
-            return None
+        if not numbers:  # pokud nejsou žádná čísla, vrátíme -1 (nebo jinou náhradní hodnotu)
+            return -1
 
         if '%' in fee_value:
             # Pokud obsahuje více částí oddělených čárkami, vezmeme první část
@@ -149,7 +155,8 @@ def convert_fee_to_float_simple(fee_value):
             # Extrakce čísla ze stringu
             fee_value = numbers[0]
             return float(fee_value)
-    return None
+    return -1  # Pokud nedostaneme žádnou platnou hodnotu, vrátíme -1 (nebo jinou náhradní hodnotu)
+
 
 
 
@@ -193,8 +200,10 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     with modification_container:
         # Skryjeme sloupec "Portfolio" v nabídce
-        available_columns = [col for col in df.columns if col != "Portfolio"]
-        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns)
+
+        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "TER", "LTV", "YIELD", "WAULT", "NAV (v mld. Kč)"]
+        available_columns = [col for col in df.columns if col not in columns_to_exclude]
+        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
         
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
@@ -301,23 +310,50 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-df.rename(columns={"Výnos 2022 (v %)":"Výnos 2022","Výnos 2021 (v %)":"Výnos 2021","Výnos 2020 (v %)":"Výnos 2020","Výnos od založení (% p.a.)":"Výnos od založení","TER (v %)":"TER","LTV (v %)":"LTV","YIELD (v %)":"YIELD"},inplace=True)
+df.rename(columns={"Výnos 2022 (v %)":"Výnos 2022 ","Výnos 2021 (v %)":"Výnos 2021 ","Výnos 2020 (v %)":"Výnos 2020 ","Výnos od založení (% p.a.)":"Výnos od založení ","TER (v %)":"TER ","LTV (v %)":"LTV ","YIELD (v %)":"YIELD ",
+                   "WAULT":"WAULT ","NAV (v mld. Kč)":"NAV "},inplace=True)
+
+
+df.info()
+
+def get_emoji(value):
+    if value >= 10:
+        return "🔹"
+    elif value >= 5:
+        return "🔸"
+    elif value < 5:
+        return "🔺"
+    else:
+        return "▫️"
+
+import numpy as np
+
+# Vytvořte nový sloupec kombinující emoji a hodnotu 'Výnos 2022'
+df['Výnos 2022'] = df['Výnos 2022 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df['Výnos 2021'] = df['Výnos 2021 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df['Výnos 2020'] = df['Výnos 2020 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df['Výnos od založení'] = df['Výnos od založení '].apply(lambda x: f"{get_emoji(x)} {x:.2f} % p.a." if not np.isnan(x) else "▫️ - - -")
+
+df["TER"] = df["TER "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f} %")
+df["LTV"] = df["LTV "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f} %")
+df["YIELD"] = df["YIELD "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f} %")
+
+df["WAULT"] = df["WAULT "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f}")
+df["NAV (v mld. Kč)"] = df["NAV "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f}")
+
+
 
 # Configure the image column
 image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
-vynos22_column = st.column_config.NumberColumn(label="Výnos 2022", format="%.2f %%")
-vynos21_column = st.column_config.NumberColumn(label="Výnos 2021", format="%.2f %%")
-vynos20_column = st.column_config.NumberColumn(label="Výnos 2020", format="%.2f %%")
 min_invest_column = st.column_config.TextColumn(help="📍**Minimální nutná částka pro vstup do fondu.** Klíčové zejména u FKI, kde je většinou 1 mil. Kč při splnění testu vhodnosti, ale někdy i 2 a více milionů.")
 poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené, ale pro finální výnos zásadní jsou poplatky.** Je třeba znát podmínky pro výstupní poplatky v různých časových horizontech – zejména ty může investor ovlivnit.")
 
 
-vynos_all_column = st.column_config.NumberColumn(label="Výnos od založení", format="%.2f %% p.a.")
-vynosNAV_column = st.column_config.NumberColumn(label="NAV (v mld. Kč) 💬",help="📍**NAV (AUM): Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.**")
-vynosTER_column = st.column_config.NumberColumn(label="TER 💬", help="📍**TER: Celkové roční náklady na správu fondu.** Čím nižší, tím lepší pro investory.", format="%.2f %%")
-vynosLTV_column = st.column_config.NumberColumn(label="LTV 💬", format="%.2f %%",help="📍**LTV: Loan to value – poměr cizího kapitálu k hodnotě nemovitosti.** Vyšší LTV pomáhá fondům dosahovat vyšších výnosů, ale zároveň je třeba říct, že větší úvěrové zatížení s sebou nese i větší riziko, kdyby se nějak dramaticky zvedly úroky z úvěru nebo propadly příjmy z pronájmu ")
-vynosYIELD_column = st.column_config.NumberColumn(label="YIELD 💬", format="%.2f %%",help="📍**YIELD: Poměr čistého ročního nájmu a hodnoty nemovitostí.** Pokud poměříte čistý roční nájem celkovou hodnotou nemovitostí, zjistíte, jakou rentabilitu ty nemovitosti mají, aneb jaké hrubé výnosy dokáže fond generovat z nájmu. Na detailu každého fondu najdete tento údaj již vypočtený pod ukazatelem „Yield“. Zpravidla to bývá mezi 5-7 % p.a. ")
-vynosWAULT_column = st.column_config.NumberColumn(label="WAULT (v letech) 💬", help="📍**WAULT: Průměrná doba do konce nájemních smluv.** Jak dlouhé má v průměru nájemní smlouvy, respektive jaká je průměrná vážená doba do konce platnosti nájemních smluv. Obecně lze říct, že čím delší doba do konce platnosti nájemních smluv, tím lépe, protože o to jistější má fond příjmy. Zpravidla to bývá mezi 3-7 lety.", format="%.2f %%")
+vynosNAV_column = st.column_config.TextColumn(label="NAV (v mld. Kč) 💬",help="📍**NAV (AUM): Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.**")
+vynosTER_column = st.column_config.TextColumn(label="TER 💬", help="📍**TER: Celkové roční náklady na správu fondu.** Čím nižší, tím lepší pro investory.")
+vynosLTV_column = st.column_config.TextColumn(label="LTV 💬", help="📍**LTV: Loan to value – poměr cizího kapitálu k hodnotě nemovitosti.** Vyšší LTV pomáhá fondům dosahovat vyšších výnosů, ale zároveň je třeba říct, že větší úvěrové zatížení s sebou nese i větší riziko, kdyby se nějak dramaticky zvedly úroky z úvěru nebo propadly příjmy z pronájmu ")
+vynosYIELD_column = st.column_config.TextColumn(label="YIELD 💬", help="📍**YIELD: Poměr čistého ročního nájmu a hodnoty nemovitostí.** Pokud poměříte čistý roční nájem celkovou hodnotou nemovitostí, zjistíte, jakou rentabilitu ty nemovitosti mají, aneb jaké hrubé výnosy dokáže fond generovat z nájmu. Na detailu každého fondu najdete tento údaj již vypočtený pod ukazatelem „Yield“. Zpravidla to bývá mezi 5-7 % p.a. ")
+vynosWAULT_column = st.column_config.TextColumn(label="WAULT (v letech) 💬", help="📍**WAULT: Průměrná doba do konce nájemních smluv.** Jak dlouhé má v průměru nájemní smlouvy, respektive jaká je průměrná vážená doba do konce platnosti nájemních smluv. Obecně lze říct, že čím delší doba do konce platnosti nájemních smluv, tím lépe, protože o to jistější má fond příjmy. Zpravidla to bývá mezi 3-7 lety.")
 
 
 
@@ -329,21 +365,27 @@ rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df.set_index('Poskytovatel', inplace=True)
 
-# Display the filtered data
 
 filtered_df = filter_dataframe(df)
 filtered_df.sort_values("Výnos 2022",ascending=False,inplace=True)
 
+# Seznam sloupců, které chcete přesunout na začátek
+cols_to_move = ["Název fondu",'Výnos 2022','Výnos 2021',"Výnos 2020","Výnos od založení","Cílený roční výnos","Min. investice","Vstupní poplatek","Manažerský poplatek","Výkonnostní poplatek","Výstupní poplatek","TER","Lhůta pro zpětný odkup",
+                "LTV","WAULT","YIELD","NAV (v mld. Kč)","Počet nemovitostí","Portfolio"]
 
+# Získání seznamu všech sloupců v DataFrame a odstranění sloupců, které chcete přesunout na začátek
+remaining_cols = [col for col in df.columns if col not in cols_to_move]
+
+# Kombinování obou seznamů k vytvoření nového pořadí sloupců
+new_order = cols_to_move + remaining_cols
+
+# Přeuspořádání sloupců v DataFrame
+filtered_df = filtered_df[new_order]
 
 
 if not filtered_df.empty:
-    st.dataframe(filtered_df.drop(columns=["Rozložení portfolia"]), hide_index=True, 
+    st.dataframe(filtered_df.drop(columns=["Rozložení portfolia","Výnos 2022 ","Výnos 2021 ","Výnos 2020 ","Výnos od založení ","TER ","LTV ","YIELD ","WAULT ","NAV "]), hide_index=True, 
                  column_config={"Poskytovatel": image_column,
-                                "Výnos 2022":vynos22_column,
-                                "Výnos 2021":vynos21_column,
-                                "Výnos 2020":vynos20_column,
-                                "Výnos od založení":vynos_all_column,
                                 "TER":vynosTER_column,
                                 "LTV":vynosLTV_column,
                                 "YIELD": vynosYIELD_column,
@@ -360,7 +402,6 @@ if not filtered_df.empty:
                                 }, height=428)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
-
 
 
 
