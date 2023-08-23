@@ -1,6 +1,4 @@
 
-
-
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -161,11 +159,6 @@ def convert_fee_to_float_simple(fee_value):
     return -1  # Pokud nedostaneme žádnou platnou hodnotu, vrátíme -1 (nebo jinou náhradní hodnotu)
 
 
-def extract_number_from_string(s):
-    numbers = re.findall(r"(\d+\.?\d*)", s)
-    if numbers:
-        return float(numbers[0])
-    return 0
 
 
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
@@ -272,31 +265,23 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 if pd.notna(_min) and pd.notna(_max):
                     _min = float(_min)
                     _max = float(_max)
-
-                    # Použití st.number_input pro zadání rozsahu
-                    user_num_input = right.number_input(
-                        f"{column} - Zadejte minimální hodnotu",
+    
+    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
+                    if _min == _max:
+                        df = df[df[column] == _min]
+                    else:
+                        step = (_max - _min) / 100
+                        if step == 0:
+                            step = 0.01
+                        user_num_input = right.slider(
+                        column,
                         min_value=_min,
                         max_value=_max,
-                        value=_min,  # Nastavíme minimální hodnotu jako výchozí
-                        step=0.01,   # Přizpůsobte krok podle vašich potřeb
-                     )
+                        value=(_min, _max),
+                        step=step,
+                        )
+                        df = df[df[column].between(*user_num_input)]
 
-                    # Získání zadané minimální hodnoty
-                    min_val = user_num_input
-
-                    user_num_input = right.number_input(
-                        f"{column} - Zadejte maximální hodnotu",
-                        min_value=_min,  # Přizpůsobte minimální hodnotu podle zadaného min_val
-                        max_value=_max,
-                        value=_max,      # Nastavíme maximální hodnotu jako výchozí
-                        step=0.01,       # Přizpůsobte krok podle vašich potřeb
-                    )
-
-                    # Získání zadané maximální hodnoty
-                    max_val = user_num_input
-
-                    df = df[df[column].between(min_val, max_val)]
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
                     column,
@@ -559,31 +544,22 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
                 if pd.notna(_min) and pd.notna(_max):
                     _min = float(_min)
                     _max = float(_max)
-
-                    # Použití st.number_input pro zadání rozsahu
-                    user_num_input = right.number_input(
-                        f"{column} - Zadejte minimální hodnotu",
+    
+    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
+                    if _min == _max:
+                        df_retail = df_retail[df_retail[column] == _min]
+                    else:
+                        step = (_max - _min) / 100
+                        if step == 0:
+                            step = 0.01
+                        user_num_input = right.slider(
+                        column,
                         min_value=_min,
                         max_value=_max,
-                        value=_min,  # Nastavíme minimální hodnotu jako výchozí
-                        step=0.01,   # Přizpůsobte krok podle vašich potřeb
-                     )
-
-                    # Získání zadané minimální hodnoty
-                    min_val = user_num_input
-
-                    user_num_input = right.number_input(
-                        f"{column} - Zadejte maximální hodnotu",
-                        min_value=_min,  # Přizpůsobte minimální hodnotu podle zadaného min_val
-                        max_value=_max,
-                        value=_max,      # Nastavíme maximální hodnotu jako výchozí
-                        step=0.01,       # Přizpůsobte krok podle vašich potřeb
-                    )
-
-                    # Získání zadané maximální hodnoty
-                    max_val = user_num_input
-
-                    df_retail = df_retail[df_retail[column].between(min_val, max_val)]
+                        value=(_min, _max),
+                        step=step,
+                        )
+                        df_retail = df_retail[df_retail[column].between(*user_num_input)]
 
             elif is_datetime64_any_dtype(df_retail[column]):
                 user_date_input = right.date_input(
@@ -688,5 +664,3 @@ if not filtered_df_retail.empty:
                  }, height=638)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
-
-
