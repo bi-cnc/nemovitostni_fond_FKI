@@ -13,7 +13,23 @@ from PIL import Image
 import base64
 import io
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Přehled nemovitostních fondů e15",
+    page_icon="✨",
+    layout="wide"
+)
+
+
+# Vložení vycentrovaného obrázku
+
+logo_image = Image.open("E15_logo_2023.png")  # Nahraďte "E15_logo_2023.png" názvem souboru vašeho loga
+
+left_co, cent_co,last_co = st.columns(3)
+with cent_co:
+    st.image(logo_image,width=600)
+
+
+st.title("Fondy kvalifikovaných investorů")
 
 # Load the data
 @st.cache_data
@@ -161,9 +177,6 @@ def convert_fee_to_float_simple(fee_value):
 
 
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
-
-
-st.title("Fondy kvalifikovaných investorů")
 
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
@@ -407,6 +420,8 @@ else:
 
 ##### Retailove fondy
 
+st.title("")
+st.title("Retailové fondy")
 
 # Load the data
 @st.cache_data
@@ -447,8 +462,6 @@ df_retail["Rozložení portfolia"] = df_retail["Portfolio"].apply(dominant_categ
 
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
 
-
-st.title("Retailové fondy")
 
 
 def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
@@ -666,7 +679,5 @@ if not filtered_df_retail.empty:
                  }, height=638)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
-
-
 
 
