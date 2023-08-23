@@ -212,7 +212,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     with modification_container:
         # Skryjeme sloupec "Portfolio" v nabídce
 
-        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "TER", "LTV", "YIELD", "WAULT", "NAV (v mld. Kč)"]
+        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "TER", "LTV", "YIELD", "WAULT", "NAV (v mld. Kč)","Název fondu"]
         available_columns = [col for col in df.columns if col not in columns_to_exclude]
         to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
         
@@ -497,7 +497,7 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
     with modification_container:
         # Skryjeme sloupec "Portfolio" v nabídce
 
-        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "NAV (v mld. Kč)"]
+        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "NAV (v mld. Kč)","Název fondu"]
         available_columns = [col for col in df_retail.columns if col not in columns_to_exclude]
         to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
         
