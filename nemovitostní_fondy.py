@@ -290,7 +290,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                         min_value=_min,  # Přizpůsobte minimální hodnotu podle zadaného min_val
                         max_value=_max,
                         value=_max,      # Nastavíme maximální hodnotu jako výchozí
-                        step=1.0,       # Přizpůsobte krok podle vašich potřeb
+                        step=0.01,       # Přizpůsobte krok podle vašich potřeb
                     )
 
                     # Získání zadané maximální hodnoty
