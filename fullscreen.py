@@ -13,8 +13,6 @@ from PIL import Image
 import base64
 import io
 
-st.set_page_config(layout="wide")
-
 # Load the data
 @st.cache_data
 def load_data():
@@ -91,7 +89,7 @@ import re
 def dominant_category(text):
     # Vytvořte slovník s klíčovými slovy pro každou kategorii
     categories = {
-        "kancelářské": ["kancelářské", "kancelář", "administrativní","office"],
+        "kancelářské": ["kancelářské", "kancelář","kanceláře", "administrativní","office"],
         "výrobní": ["výrobní", "výroba"],
         "logistické": ["logistika", "logistické","logistika a výroba"],
         "obchodní": ["obchodní"],
@@ -160,8 +158,6 @@ def convert_fee_to_float_simple(fee_value):
 
 
 
-
-
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
 
 
@@ -178,9 +174,9 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify = st.checkbox("Přidat filtrování")
+    modify1 = st.checkbox("Přidat filtrování", key="checkbox1")
 
-    if not modify:
+    if not modify1:
         return df
 
     df = df.copy()
@@ -322,9 +318,9 @@ def get_emoji(value):
     elif value >= 5:
         return "🔸"
     elif value < 5:
-        return "🔺"
+        return "💢"
     else:
-        return "▫️"
+        return "▫"
 
 import numpy as np
 
@@ -382,6 +378,7 @@ new_order = cols_to_move + remaining_cols
 # Přeuspořádání sloupců v DataFrame
 filtered_df = filtered_df[new_order]
 
+filtered_df.info()
 
 if not filtered_df.empty:
     st.dataframe(filtered_df.drop(columns=["Rozložení portfolia","Výnos 2022 ","Výnos 2021 ","Výnos 2020 ","Výnos od založení ","TER ","LTV ","YIELD ","WAULT ","NAV "]), hide_index=True, 
@@ -402,6 +399,272 @@ if not filtered_df.empty:
                                 }, height=428)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
+
+
+
+##### Retailove fondy
+
+
+# Load the data
+@st.cache_data
+def load_data():
+    df_retail = pd.read_csv("Retail_fondy_streamlit.csv")
+    return df_retail
+
+df_retail = load_data()
+
+df_retail.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
+
+    
+
+# Apply conversion function to the column with image paths
+df_retail["Poskytovatel"] = df_retail["Poskytovatel"].apply(image_to_base64)
+
+df_retail.info()
+
+
+
+
+# Nahraďte NaN hodnoty "Neuvedeno"
+
+df_retail["Rok vzniku fondu"] = df_retail["Rok vzniku fondu"].replace("- - -", np.nan).fillna("- - -")
+df_retail.loc[df_retail["Rok vzniku fondu"] != "- - -", "Rok vzniku fondu"] = df_retail[df_retail["Rok vzniku fondu"] != "- - -"]["Rok vzniku fondu"].astype(float).astype(int)
+
+df_retail["Vstupní poplatek"].fillna("- - -", inplace=True)
+df_retail["Manažerský poplatek"].fillna("- - -", inplace=True)
+df_retail["Výkonnostní poplatek"].fillna("- - -", inplace=True)
+df_retail["Výstupní poplatek"].fillna("- - -", inplace=True)
+df_retail["Portfolio"].fillna("- - -", inplace=True)
+
+
+
+
+df_retail["Rozložení portfolia"] = df_retail["Portfolio"].apply(dominant_category)
+
+
+fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
+
+
+st.title("Retailové fondy")
+
+
+def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds a UI on top of a dataframe to let viewers filter columns
+
+    Args:
+        df_retail (pd.DataFrame): Original dataframe
+
+    Returns:
+        pd.DataFrame: Filtered dataframe
+    """
+    modify2 = st.checkbox("Přidat filtrování", key="checkbox2")
+
+    if not modify2:
+        return df_retail
+
+    df_retail = df_retail.copy()
+
+    # Try to convert datetimes into a standard format (datetime, no timezone)
+    for col in df_retail.columns:
+        if is_object_dtype(df_retail[col]):
+            try:
+                df_retail[col] = pd.to_datetime(df_retail[col])
+            except Exception:
+                pass
+
+        if is_datetime64_any_dtype(df_retail[col]):
+            df_retail[col] = df_retail[col].dt.tz_localize(None)
+
+    modification_container = st.container()
+
+    with modification_container:
+        # Skryjeme sloupec "Portfolio" v nabídce
+
+        columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "NAV (v mld. Kč)"]
+        available_columns = [col for col in df_retail.columns if col not in columns_to_exclude]
+        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
+        
+        for column in to_filter_columns:
+            left, right = st.columns((1, 20))
+
+            if column == "Rozložení portfolia":
+                unique_portfolio_values = df_retail[column].dropna().unique()
+                user_portfolio_input = right.multiselect(
+                "Rozložení portfolia",
+                unique_portfolio_values,
+                default=list(unique_portfolio_values)
+                )
+                df_retail = df_retail[df_retail[column].isin(user_portfolio_input)]
+                continue
+            
+            # Pro poplatky - použijeme specifické řazení
+            if column in fee_columns:
+                sorted_fee_values = sorted(df_retail[column].dropna().unique(), key=convert_fee_to_float_simple)
+                user_fee_input = right.multiselect(
+                    column,
+                    sorted_fee_values,
+                    default=list(sorted_fee_values)
+                )
+                df_retail = df_retail[df_retail[column].isin(user_fee_input)]
+                continue  # pokračujte dalším sloupcem
+            # When creating the filter UI for this column:          
+            if column == "Rok vzniku fondu":
+                unique_years = [val for val in df_retail[column].dropna().unique() if val != "- - -"]
+                min_year = min(unique_years)
+                max_year = max(unique_years)
+                user_year_input = right.slider(
+                column,
+                min_value=min_year,
+                max_value=max_year,
+                value=(min_year, max_year)
+                )
+                df_retail = df_retail[df_retail[column].between(*user_year_input)]
+                continue  # pokračujte dalším sloupcem
+            # Pro Min. investice
+            if column == "Min. investice":
+                unique_values = [val for val in df_retail[column].dropna().unique() if val != "1 mil. Kč nebo 125 tis. euro"]
+                user_cat_input = right.multiselect(
+                    column,
+                    unique_values,
+                    default=list(unique_values)
+                )
+                if "1 mil. Kč" in user_cat_input:
+                    user_cat_input.append("1 mil. Kč nebo 125 tis. euro")
+                df_retail = df_retail[df_retail[column].isin(user_cat_input)]
+                continue  # pokračujte dalším sloupcem
+
+            if df_retail[column].apply(lambda x: not pd.api.types.is_number(x)).any():
+                unique_values = df_retail[column].dropna().unique()
+
+            elif is_numeric_dtype(df_retail[column]):
+                _min = df_retail[column].min()
+                _max = df_retail[column].max()
+                if pd.notna(_min) and pd.notna(_max):
+                    _min = float(_min)
+                    _max = float(_max)
+    
+    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
+                    if _min == _max:
+                        df_retail = df_retail[df_retail[column] == _min]
+                    else:
+                        step = (_max - _min) / 100
+                        if step == 0:
+                            step = 0.01
+                        user_num_input = right.slider(
+                        column,
+                        min_value=_min,
+                        max_value=_max,
+                        value=(_min, _max),
+                        step=step,
+                        )
+                        df_retail = df_retail[df_retail[column].between(*user_num_input)]
+
+            elif is_datetime64_any_dtype(df_retail[column]):
+                user_date_input = right.date_input(
+                    column,
+                    value=(
+                        df_retail[column].min(),
+                        df_retail[column].max(),
+                    ),
+                )
+                if len(user_date_input) == 2:
+                    user_date_input = tuple(map(pd.to_datetime, user_date_input))
+                    start_date, end_date = user_date_input
+                    df_retail = df_retail.loc[df_retail[column].between(start_date, end_date)]
+            else:
+                user_text_input = right.text_input(
+                    f"Substring or regex in {column}",
+                )
+                if user_text_input:
+                    df_retail = df_retail[df_retail[column].astype(str).str.contains(user_text_input)]
+ 
+    return df_retail
+
+
+
+
+df_retail.rename(columns={"Výnos 2022 (v %)":"Výnos 2022 ","Výnos 2021 (v %)":"Výnos 2021 ","Výnos 2020 (v %)":"Výnos 2020 ","Výnos od založení (% p.a.)":"Výnos od založení ","NAV (v mld. Kč)":"NAV "},inplace=True)
+
+
+df_retail.info()
+
+def get_emoji(value):
+    if value >= 10:
+        return "🔹"
+    elif value >= 5:
+        return "🔸"
+    elif value < 5:
+        return "💢"
+    else:
+        return "▫"
+
+
+# Vytvořte nový sloupec kombinující emoji a hodnotu 'Výnos 2022'
+df_retail['Výnos 2022'] = df_retail['Výnos 2022 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df_retail['Výnos 2021'] = df_retail['Výnos 2021 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df_retail['Výnos 2020'] = df_retail['Výnos 2020 '].apply(lambda x: f"{get_emoji(x)} {x:.2f} %" if not np.isnan(x) else "▫️ - - -")
+df_retail['Výnos od založení'] = df_retail['Výnos od založení '].apply(lambda x: f"{get_emoji(x)} {x:.2f} % p.a." if not np.isnan(x) else "▫️ - - -")
+
+df_retail["NAV (v mld. Kč)"] = df_retail["NAV "].apply(lambda x: "- - -" if pd.isna(x) else f"{x:.2f}")
+
+
+# Configure the image column
+image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
+rok_vzniku_fondu_column = st.column_config.NumberColumn(format="%d")
+min_invest_column = st.column_config.TextColumn(help="📍**Minimální nutná částka pro vstup do fondu.** Klíčové zejména u FKI, kde je většinou 1 mil. Kč při splnění testu vhodnosti, ale někdy i 2 a více milionů.")
+poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené, ale pro finální výnos zásadní jsou poplatky.** Je třeba znát podmínky pro výstupní poplatky v různých časových horizontech – zejména ty může investor ovlivnit.")
+
+
+vynosNAV_column = st.column_config.TextColumn(label="NAV (v mld. Kč) 💬",help="📍**NAV (AUM): Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.**")
+
+
+pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
+            max_value=50)
+
+nazev_column = st.column_config.TextColumn(label="Název fondu", width="medium")
+rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
+
+df_retail.set_index('Poskytovatel', inplace=True)
+
+
+filtered_df_retail = filter_dataframe(df_retail)
+filtered_df_retail.sort_values("Výnos 2022 ",ascending=False,inplace=True)
+
+
+# Seznam sloupců, které chcete přesunout na začátek
+cols_to_move = ["Název fondu",'Výnos 2022','Výnos 2021',"Výnos 2020","Výnos od založení","Rok vzniku fondu","Min. investice","Vstupní poplatek","Manažerský poplatek","Výkonnostní poplatek","Výstupní poplatek",
+                "NAV (v mld. Kč)","Počet nemovitostí","Portfolio"]
+
+# Získání seznamu všech sloupců v DataFrame a odstranění sloupců, které chcete přesunout na začátek
+remaining_cols = [col for col in df_retail.columns if col not in cols_to_move]
+
+# Kombinování obou seznamů k vytvoření nového pořadí sloupců
+new_order = cols_to_move + remaining_cols
+
+# Přeuspořádání sloupců v DataFrame
+filtered_df_retail = filtered_df_retail[new_order]
+
+
+if not filtered_df_retail.empty:
+    st.dataframe(filtered_df_retail.drop(columns=["Rozložení portfolia","Výnos 2022 ","Výnos 2021 ","Výnos 2020 ","Výnos od založení ","NAV "]), hide_index=True, 
+                 column_config={
+                     "Poskytovatel": image_column,
+                     "Počet nemovitostí": pocet_nemov_column,
+                     "Název fondu": nazev_column,
+                     "Portfolio": rozlozeni_column,
+                     "NAV (v mld. Kč)": vynosNAV_column,
+                     "Min. investice": min_invest_column,
+                     "Vstupní poplatek": poplatky_column,
+                     "Manažerský poplatek": poplatky_column,
+                     "Výkonnostní poplatek": poplatky_column,
+                     "Výstupní poplatek": poplatky_column,
+                     "Rok vzniku fondu": rok_vzniku_fondu_column
+                 }, height=638)
+else:
+    st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
 
 
 
