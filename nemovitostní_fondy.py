@@ -431,7 +431,6 @@ df_retail = load_data()
 
 df_retail.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
 
-    
 
 # Apply conversion function to the column with image paths
 df_retail["Poskytovatel"] = df_retail["Poskytovatel"].apply(image_to_base64)
@@ -696,9 +695,14 @@ else:
 
 
 st.title("")
-st.title("Legenda")
-st.title("")
 
-with st.expander("Co znamená jaký finanční ukazatel?"):
-        st.write("The chart above shows some numbers I picked for you. I rolled actual dice for these, so theyre *guaranteed* to be random.")
-        st.image("https://static.streamlit.io/examples/dice.jpg")
+with st.expander(":orange[**LEGENDA?**]",expanded=True):
+    st.write("")
+    st.write("📍**NAV (AUM)**: Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.")
+    st.write("📍**TER: Celkové roční náklady na správu fondu.** Čím nižší, tím lepší pro investory.")
+    st.write("📍**LTV: Loan to value – poměr cizího kapitálu k hodnotě nemovitosti.** Vyšší LTV pomáhá fondům dosahovat vyšších výnosů, ale zároveň je třeba říct, že větší úvěrové zatížení s sebou nese i větší riziko, kdyby se nějak dramaticky zvedly úroky z úvěru nebo propadly příjmy z pronájmu.")
+    st.write("📍**YIELD: Poměr čistého ročního nájmu a hodnoty nemovitostí.** Pokud poměříte čistý roční nájem celkovou hodnotou nemovitostí, zjistíte, jakou rentabilitu ty nemovitosti mají, aneb jaké hrubé výnosy dokáže fond generovat z nájmu. Na detailu každého fondu najdete tento údaj již vypočtený pod ukazatelem „Yield“. Zpravidla to bývá mezi 5-7 % p.a. ")
+    st.write("📍**WAULT: Průměrná doba do konce nájemních smluv.** Jak dlouhé má v průměru nájemní smlouvy, respektive jaká je průměrná vážená doba do konce platnosti nájemních smluv. Obecně lze říct, že čím delší doba do konce platnosti nájemních smluv, tím lépe, protože o to jistější má fond příjmy. Zpravidla to bývá mezi 3-7 lety.")
+
+
+
