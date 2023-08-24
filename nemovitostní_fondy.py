@@ -696,7 +696,7 @@ else:
 
 st.title("")
 
-with st.expander(":#CD4C08[**LEGENDA**]",expanded=False):
+with st.expander(":black[**LEGENDA**]",expanded=False):
     st.write("")
     st.write("📍**NAV (AUM)**: Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.")
     st.write("📍**TER: Celkové roční náklady na správu fondu.** Čím nižší, tím lepší pro investory.")
