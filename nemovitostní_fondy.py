@@ -690,3 +690,15 @@ if not filtered_df_retail.empty:
                  }, height=638)
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
+
+
+
+
+st.title("")
+st.title("Legenda")
+st.title("")
+
+with st.expander("Co znamená jaký finanční ukazatel?"):
+        st.write("The chart above shows some numbers I picked for you. I rolled actual dice for these, so theyre *guaranteed* to be random.")
+        st.image("https://static.streamlit.io/examples/dice.jpg")
