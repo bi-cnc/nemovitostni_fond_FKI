@@ -199,8 +199,12 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
         columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "TER", "LTV", "YIELD", "WAULT", "NAV (v mld. Kč)","Název fondu"]
         available_columns = [col for col in df.columns if col not in columns_to_exclude]
-        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
-        
+        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns, placeholder="Vybrat finanční ukazatel")
+
+        if len(to_filter_columns) > 1:
+            st.warning("V tomto filtru můžete vybrat pouze 1 finanční ukazatel. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
+            to_filter_columns = []  # Reset the selection
+
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
 
@@ -265,22 +269,31 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 if pd.notna(_min) and pd.notna(_max):
                     _min = float(_min)
                     _max = float(_max)
-    
-    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
-                    if _min == _max:
-                        df = df[df[column] == _min]
-                    else:
-                        step = (_max - _min) / 100
-                        if step == 0:
-                            step = 0.01
-                        user_num_input = right.slider(
-                        column,
+
+                    # Použití st.number_input pro zadání rozsahu
+                    user_num_input = right.number_input(
+                        f"{column} - Zadejte minimální hodnotu",
                         min_value=_min,
                         max_value=_max,
-                        value=(_min, _max),
-                        step=step,
-                        )
-                        df = df[df[column].between(*user_num_input)]
+                        value=_min,  # Nastavíme minimální hodnotu jako výchozí
+                        step=0.01,   # Přizpůsobte krok podle vašich potřeb
+                    )
+
+                    # Získání zadané minimální hodnoty
+                    min_val = user_num_input
+
+                    user_num_input = right.number_input(
+                        f"{column} - Zadejte maximální hodnotu",
+                        min_value=_min,  # Přizpůsobte minimální hodnotu podle zadaného min_val
+                        max_value=_max,
+                        value=_max,      # Nastavíme maximální hodnotu jako výchozí
+                        step=0.01,       # Přizpůsobte krok podle vašich potřeb
+                    )
+
+                    # Získání zadané maximální hodnoty
+                    max_val = user_num_input
+
+                    df = df[df[column].between(min_val, max_val)]
 
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
@@ -484,7 +497,11 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
 
         columns_to_exclude = ["Portfolio", "Výnos 2022", "Výnos 2021", "Výnos 2020", "Výnos od založení", "NAV (v mld. Kč)","Název fondu"]
         available_columns = [col for col in df_retail.columns if col not in columns_to_exclude]
-        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns,placeholder="Vybrat finanční ukazatel")
+        to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns, placeholder="Vybrat finanční ukazatel")
+
+        if len(to_filter_columns) > 1:
+            st.warning("V tomto filtru můžete vybrat pouze 1 finanční ukazatel. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
+            to_filter_columns = []  # Reset the selection
         
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
@@ -544,22 +561,31 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
                 if pd.notna(_min) and pd.notna(_max):
                     _min = float(_min)
                     _max = float(_max)
-    
-    # Pokud jsou hodnoty min a max stejné, nevytvoříme posuvník a vrátíme dataframe filtrovaný na základě této hodnoty
-                    if _min == _max:
-                        df_retail = df_retail[df_retail[column] == _min]
-                    else:
-                        step = (_max - _min) / 100
-                        if step == 0:
-                            step = 0.01
-                        user_num_input = right.slider(
-                        column,
+
+                    # Použití st.number_input pro zadání rozsahu
+                    user_num_input = right.number_input(
+                        f"{column} - Zadejte minimální hodnotu",
                         min_value=_min,
                         max_value=_max,
-                        value=(_min, _max),
-                        step=step,
-                        )
-                        df_retail = df_retail[df_retail[column].between(*user_num_input)]
+                        value=_min,  # Nastavíme minimální hodnotu jako výchozí
+                        step=0.01,   # Přizpůsobte krok podle vašich potřeb
+                    )
+
+                    # Získání zadané minimální hodnoty
+                    min_val = user_num_input
+
+                    user_num_input = right.number_input(
+                        f"{column} - Zadejte maximální hodnotu",
+                        min_value=_min,  # Přizpůsobte minimální hodnotu podle zadaného min_val
+                        max_value=_max,
+                        value=_max,      # Nastavíme maximální hodnotu jako výchozí
+                        step=0.01,       # Přizpůsobte krok podle vašich potřeb
+                    )
+
+                    # Získání zadané maximální hodnoty
+                    max_val = user_num_input
+
+                    df_retail = df_retail[df_retail[column].between(min_val, max_val)]
 
             elif is_datetime64_any_dtype(df_retail[column]):
                 user_date_input = right.date_input(
