@@ -515,6 +515,7 @@ df_retail = load_data()
 
 df_retail.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
 
+df_retail["Název fondu"] = df_retail["Název fondu"] + " 💬"
 
 # Apply conversion function to the column with image paths
 df_retail["Poskytovatel"] = df_retail["Poskytovatel"].apply(image_to_base64)
@@ -737,7 +738,7 @@ vynosNAV_column = st.column_config.TextColumn(label="NAV (v mld. Kč) 💬",help
 pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
             max_value=50)
 
-nazev_column = st.column_config.TextColumn(label="Název fondu", width="medium")
+nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df_retail.set_index('Poskytovatel', inplace=True)
@@ -779,6 +780,98 @@ if not filtered_df_retail.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
+
+# Styling
+st.markdown("""
+<style>
+.portal-navigator {
+    padding-left: .5em;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #404040;
+    height: 1.5em;
+    border-radius: 6px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    opacity: 1;
+    z-index: 999;
+    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 2px 10px);
+}
+
+.portal-navigator > a {
+    margin-right: .5em;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer; /* Přidání kurzoru jako ruky pro odkazy */
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Script to add links
+html("""
+<script>
+function add_navigator_to_portal(doc) {
+    portal = doc.getElementById('portal');
+    observer = new MutationObserver(function(mutations, observer) {
+        let entry = portal.querySelector('.clip-region');
+        if (entry) {
+            let text = entry.textContent;
+            let span = document.createElement('span');
+            span.className = "portal-navigator";
+            if (text.includes("Creditas Nemovitostní I 💬")) {
+                span.innerHTML = '<a href="https://www.creditasfondy.cz/fund/creditas-nemovitostni-i" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Raiffeisen nemovitostní fond 💬")) {
+                span.innerHTML = '<a href="https://www.rb.cz/osobni/zhodnoceni-uspor/investice/podilove-fondy/raiffeisen-realitni-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Mint I. rezidenční fond  💬")) {
+                span.innerHTML = '<a href="https://www.mintrezidencnifond.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("ZFP realitní fond 💬")) {
+                span.innerHTML = '<a href="https://www.zfpinvest.com/portfolio/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Schönfeld & Co Prémiové nemovitosti 💬")) {
+                span.innerHTML = '<a href="https://www.schonfeldfondy.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("IAD Korunový realitní fond 💬")) {
+                span.innerHTML = '<a href="https://iad.sk/cs/podilove-fondy/fond/korunovy-realitni-fond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Generali Fond Realit  💬")) {
+                span.innerHTML = '<a href="https://www.generali-investments.cz/produkty/investice-v-czk/fondy/generali-fond-realit.html" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("NEMO Fund 💬")) {
+                span.innerHTML = '<a href="https://www.fondnemo.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("ZDR Investments Public Real Estate 💬")) {
+                span.innerHTML = '<a href="https://www.conseq.cz/investice/prehled-fondu/zdr-public-podfond-real-estate-czk" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Investika realitní fond 💬")) {
+                span.innerHTML = '<a href="https://moje.investika.cz/investicni-fondy/investika-realitni-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Conseq realitní fond  💬")) {
+                span.innerHTML = '<a href="https://www.conseq.cz/investice/prehled-fondu/conseq-realitni-czk" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Investika realitní fond 💬")) {
+                span.innerHTML = '<a href="https://moje.investika.cz/investicni-fondy/investika-realitni-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Trigea nemovitostní fond 💬")) {
+                span.innerHTML = '<a href="https://www.trigea.cz/vykonnost-fondu/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Czech Real Estate Investment Fund 💬")) {
+                span.innerHTML = '<a href="https://czech-fund.cz/?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0Czrqg-EQZUlar2E-mo6rMFR6DnGGOFySgm4zgFQrsx7Ne5jiOeVlQVgaApNaEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("REICO ČS Nemovitostní 💬")) {
+                span.innerHTML = '<a href="https://www.reico.cz/cs/cs-nemovitostni-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("REICO ČS Long Lease  💬")) {
+                span.innerHTML = '<a href="https://www.reico.cz/cs/long-lease-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("TESLA Realita nemovitostní fond 💬")) {
+                span.innerHTML = '<a href="https://www.atrisinvest.cz/fond-realita/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Amundi Realti  💬")) {
+                span.innerHTML = '<a href="https://www.amundi.cz/produkty" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            }
+            // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
+            span.querySelector('a').setAttribute('onclick', 'window.open(this.href); return false;');
+            cont = entry.parentElement;
+            cont.insertBefore(span, entry);
+            console.log("inserted");
+
+        }
+    });
+    observer.observe(portal, {childList: true});
+};
+add_navigator_to_portal(parent.window.document)
+</script>
+""")
 
 
 if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) and any(filtered_df["Uživatelský výběr"].apply(lambda x: x == False)):
