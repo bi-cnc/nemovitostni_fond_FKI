@@ -880,7 +880,6 @@ if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) 
     st.title("")
     st.title("")
     st.title("")
-    st.title("")
     st.title("Legenda")
     st.title("")
     with st.expander(":orange[**Co znamená jaký finanční ukazatel?**]",expanded=True):
