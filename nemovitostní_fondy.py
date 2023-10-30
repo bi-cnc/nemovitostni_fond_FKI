@@ -26,8 +26,6 @@ df = load_data()
 
 df.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
 
-df["Název fondu"] = df["Název fondu"] + " 💬"
-
 # Convert image to Base64
 def image_to_base64(img_path, output_size=(441, 100)):
     # Open an image file
@@ -377,7 +375,6 @@ vynosWAULT_column = st.column_config.TextColumn(label="WAULT (v letech) 💬", h
 pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
             max_value=50)
 
-nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df.set_index('Poskytovatel', inplace=True)
@@ -421,86 +418,6 @@ if not filtered_df.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
-from streamlit.components.v1 import html
-
-
-# Styling
-st.markdown("""
-<style>
-.portal-navigator {
-    padding-left: .5em;
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    color: #404040;
-    height: 1.5em;
-    border-radius: 6px;
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    opacity: 1;
-    z-index: 999;
-    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 2px 10px);
-}
-
-.portal-navigator > a {
-    margin-right: .5em;
-    color: #069;
-    text-decoration: underline;
-    cursor: pointer; /* Přidání kurzoru jako ruky pro odkazy */
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Script to add links
-html("""
-<script>
-function add_navigator_to_portal(doc) {
-    portal = doc.getElementById('portal');
-    observer = new MutationObserver(function(mutations, observer) {
-        let entry = portal.querySelector('.clip-region');
-        if (entry) {
-            let text = entry.textContent;
-            let span = document.createElement('span');
-            span.className = "portal-navigator";
-            if (text.includes("WOOD & Company podfond Retail 💬")) {
-                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/retail-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Jet Industrial Lease 💬")) {
-                span.innerHTML = '<a href="https://www.jetinvestment.cz/fondy-jet/jet-industrial-lease/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("REALIA FUND SICAV, a.s. REALIA Podfond Retail Parks 💬")) {
-                span.innerHTML = '<a href="https://www.avantfunds.cz/cs/fondy/realia-fund-sicav-a-s/realia-podfond-retail-parks/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("WOOD & Company Office 💬")) {
-                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/office-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Silverline Real Estate 💬")) {
-                span.innerHTML = '<a href="https://silverlinere.com/cs" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Fond Českého bydlení  💬")) {
-                span.innerHTML = '<a href="https://www.fondbydleni.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("ZDR Investments Real Estate FKI 💬")) {
-                span.innerHTML = '<a href="https://www.zdrinvestments.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("TRIKAYA nemovitostní fond SICAV, a.s. 💬")) {
-                span.innerHTML = '<a href="https://fond.trikaya.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Nova Real Estate 💬")) {
-                span.innerHTML = '<a href="https://www.redsidefunds.com/cs/fondy/nova-real-estate" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("DOMOPLAN SICAV, a.s. 💬")) {
-                span.innerHTML = '<a href="https://www.domoplan.eu/cs/investice/domoplan-sicav-a-s-6MDviG" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Accolade Industrial Fund A2 Dis (CZK) 💬")) {
-                span.innerHTML = '<a href="https://accolade.eu/domains/accolade.eu/cs/fond?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0CzrdKx3tzR9Qf1ABf2hfJEG-JcTnwooKnt2HdcZf2JlJfluSd37ii28aAphTEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-                return; // Exit if no 💬 symbol detected
-            }
-            // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
-            span.querySelector('a').setAttribute('onclick', 'window.open(this.href); return false;');
-            cont = entry.parentElement;
-            cont.insertBefore(span, entry);
-            console.log("inserted");
-        }
-    });
-    observer.observe(portal, {childList: true});
-};
-add_navigator_to_portal(parent.window.document)
-</script>
-""")
 
 
 ##### Retailove fondy
