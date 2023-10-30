@@ -483,7 +483,7 @@ function add_navigator_to_portal(doc) {
                 span.innerHTML = '<a href="https://fond.trikaya.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("Nova Real Estate 💬")) {
                 span.innerHTML = '<a href="https://www.redsidefunds.com/cs/fondy/nova-real-estate" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("DOMOPLAN SICAV, a.s. 💬")) {
+            } else if (text.includes("DOMOPLAN SICAV, a.s.  💬")) {
                 span.innerHTML = '<a href="https://www.domoplan.eu/cs/investice/domoplan-sicav-a-s-6MDviG" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             }
             // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
