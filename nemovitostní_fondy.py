@@ -503,7 +503,6 @@ add_navigator_to_portal(parent.window.document)
 """)
 
 
-
 ##### Retailove fondy
 
 st.title("")
