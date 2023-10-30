@@ -475,6 +475,8 @@ function add_navigator_to_portal(doc) {
                 span.innerHTML = '<a href="https://silverlinere.com/cs" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("Fond Českého bydlení  💬")) {
                 span.innerHTML = '<a href="https://www.fondbydleni.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Accolade Industrial Fund A2 Dis (CZK) 💬")) {
+                span.innerHTML = '<a href="https://accolade.eu/domains/accolade.eu/cs/fond?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0CzrdKx3tzR9Qf1ABf2hfJEG-JcTnwooKnt2HdcZf2JlJfluSd37ii28aAphTEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("ZDR Investments Real Estate FKI 💬")) {
                 span.innerHTML = '<a href="https://www.zdrinvestments.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("TRIKAYA nemovitostní fond SICAV, a.s. 💬")) {
@@ -483,15 +485,13 @@ function add_navigator_to_portal(doc) {
                 span.innerHTML = '<a href="https://www.redsidefunds.com/cs/fondy/nova-real-estate" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("DOMOPLAN SICAV, a.s. 💬")) {
                 span.innerHTML = '<a href="https://www.domoplan.eu/cs/investice/domoplan-sicav-a-s-6MDviG" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Accolade Industrial Fund A2 Dis (CZK) 💬")) {
-                span.innerHTML = '<a href="https://accolade.eu/domains/accolade.eu/cs/fond?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0CzrdKx3tzR9Qf1ABf2hfJEG-JcTnwooKnt2HdcZf2JlJfluSd37ii28aAphTEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-                return; // Exit if no 💬 symbol detected
             }
             // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
             span.querySelector('a').setAttribute('onclick', 'window.open(this.href); return false;');
             cont = entry.parentElement;
             cont.insertBefore(span, entry);
             console.log("inserted");
+
         }
     });
     observer.observe(portal, {childList: true});
@@ -499,7 +499,6 @@ function add_navigator_to_portal(doc) {
 add_navigator_to_portal(parent.window.document)
 </script>
 """)
-
 
 ##### Retailove fondy
 
