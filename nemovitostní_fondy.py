@@ -781,6 +781,36 @@ if not filtered_df_retail.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
+# Styling
+st.markdown("""
+<style>
+.portal-navigator {
+    padding-left: .5em;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #404040;
+    height: 1.5em;
+    border-radius: 6px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    opacity: 1;
+    z-index: 999;
+    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 2px 10px);
+}
+
+.portal-navigator > a {
+    margin-right: .5em;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer; /* Přidání kurzoru jako ruky pro odkazy */
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Script to add links
 html("""
 <script>
