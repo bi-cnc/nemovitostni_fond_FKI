@@ -189,7 +189,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify1 = st.checkbox("Přidat filtrování", key="checkbox1")
+    modify1 = st.toggle("Přidat filtrování", key="checkbox1")
 
     if not modify1:
         return df
@@ -553,7 +553,7 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify2 = st.checkbox("Přidat filtrování", key="checkbox2")
+    modify2 = st.toggle("Přidat filtrování", key="checkbox2")
 
     if not modify2:
         return df_retail
