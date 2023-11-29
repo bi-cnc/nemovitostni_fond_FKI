@@ -374,7 +374,8 @@ vynosWAULT_column = st.column_config.TextColumn(label="WAULT (v letech) 💬", h
 
 nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 
-pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f")
+pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
+            max_value=50)
 
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
