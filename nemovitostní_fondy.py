@@ -735,8 +735,7 @@ poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené,
 vynosNAV_column = st.column_config.TextColumn(label="NAV (v mld. Kč) 💬",help="📍**NAV (AUM): Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.**")
 
 
-pocet_nemov_column = st.column_config.ProgressColumn(label="Počet nemovitostí",format="%f", min_value=0,
-            max_value=50)
+pocet_nemov_column = st.column_config.NumberColumn(label="Počet nemovitostí")
 
 nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
