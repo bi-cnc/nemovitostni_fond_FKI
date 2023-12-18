@@ -14,14 +14,15 @@ import base64
 import io
 
 
-st.markdown("""
-    <style>
-    .embeddedAppMetaInfoBar_linkOutText__4ptMa,
-    .embeddedAppMetaInfoBar_linkOutIcon__9tDe3 {
-        display: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            fullscreen {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
 st.title("Fondy kvalifikovaných investorů")
