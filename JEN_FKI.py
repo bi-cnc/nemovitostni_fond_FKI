@@ -13,11 +13,11 @@ from PIL import Image
 import base64
 import io
 
-    hide_footer_style = """
+hide_footer_style = """
     <style>
     .reportview-container .main footer {visibility: hidden;}    
     """
-    st.markdown(hide_footer_style, unsafe_allow_html=True)
+st.markdown(hide_footer_style, unsafe_allow_html=True)
 
 hide_st_style = """
             <style>
