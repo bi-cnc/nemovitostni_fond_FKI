@@ -15,7 +15,7 @@ import io
 
 hide_footer_style = """
     <style>
-    .embeddedAppMetaInfoBar_container__DxxL1r {visibility: hidden;}    
+    embeddedAppMetaInfoBar_container__DxxL1r {visibility: hidden;}    
     """
 st.markdown(hide_footer_style, unsafe_allow_html=True)
 
