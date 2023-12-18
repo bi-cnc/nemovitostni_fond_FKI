@@ -13,16 +13,6 @@ from PIL import Image
 import base64
 import io
 
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            fullscreen {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
-
 
 st.markdown("""
     <style>
