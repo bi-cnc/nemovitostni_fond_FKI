@@ -13,6 +13,13 @@ from PIL import Image
 import base64
 import io
 
+# Add Link to your repo
+'''
+    [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/AvratanuBiswas/PubLit) 
+
+'''
+st.markdown("<br>",unsafe_allow_html=True)
+
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
