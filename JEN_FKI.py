@@ -13,18 +13,12 @@ from PIL import Image
 import base64
 import io
 
-# Add Link to your repo
-'''
-    [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/AvratanuBiswas/PubLit) 
-
-'''
-st.markdown(unsafe_allow_html=True)
-
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
+            fullscreen {visibility: hidden;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
