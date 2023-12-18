@@ -24,6 +24,16 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
+st.markdown("""
+    <style>
+    .embeddedAppMetaInfoBar_linkOutText__4ptMa,
+    .embeddedAppMetaInfoBar_linkOutIcon__9tDe3 {
+        display: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 st.title("Fondy kvalifikovaných investorů")
 
 # Load the data
