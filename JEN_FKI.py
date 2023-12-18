@@ -18,7 +18,7 @@ import io
     [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/AvratanuBiswas/PubLit) 
 
 '''
-st.markdown("<br>",unsafe_allow_html=True)
+st.markdown(unsafe_allow_html=True)
 
 hide_st_style = """
             <style>
