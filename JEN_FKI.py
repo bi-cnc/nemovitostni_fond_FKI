@@ -13,11 +13,13 @@ from PIL import Image
 import base64
 import io
 
-hide_footer_style = """
+st.markdown("""
     <style>
-    embeddedAppMetaInfoBar_container__DxxL1r {visibility: hidden;}    
-    """
-st.markdown(hide_footer_style, unsafe_allow_html=True)
+    .embeddedAppMetaInfoBar_container__DxxL1 {
+        display: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 hide_st_style = """
             <style>
