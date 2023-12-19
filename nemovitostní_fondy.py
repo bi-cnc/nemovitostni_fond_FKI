@@ -16,7 +16,7 @@ import io
 from streamlit.components.v1 import html
 
 import streamlit as st
-from streamlit-js-eval import streamlit-js-eval
+from streamlit_js_eval import streamlit_js_eval
 
 # JavaScript expression to check if the device is mobile
 js_check_mobile = """
