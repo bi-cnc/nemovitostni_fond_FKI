@@ -13,6 +13,17 @@ from PIL import Image
 import base64
 import io
 
+# Custom HTML for fullscreen symbol and link
+fullscreen_html = """
+<div style="position: absolute; top: 10px; right: 0; padding: 10px;">
+    <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
+        <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
+    </a>
+</div>
+"""
+
+# Inject the HTML into the Streamlit app
+html(fullscreen_html, height=50)
 
 st.header("Fondy kvalifikovaných investorů")
 
