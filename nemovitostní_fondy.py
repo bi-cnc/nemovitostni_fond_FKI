@@ -15,33 +15,18 @@ import io
 
 from streamlit.components.v1 import html
 
-import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
-
-# JavaScript expression to check if the device is mobile
-js_check_mobile = """
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    return isMobile;
+# Custom HTML and CSS
+custom_html = """
+<div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
+    <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
+        <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
+    </a>
+</div>
 """
 
-# Using streamlit_js_eval to execute the JavaScript
-is_mobile = streamlit_js_eval(js_expressions=js_check_mobile, want_output=True, key='deviceCheck')
-
-# If the output is True, the user is on a mobile device
-if is_mobile:
-    # Code for mobile device
-    st.markdown("<h1 style='font-family: IBM Plex Sans, sans-serif; font-size: 26px; font-weight: 600; color: #262730;'>Fondy kvalifikovaných investorů</h1>", unsafe_allow_html=True)
-else:
-    # Code for desktop device
-    custom_html = """
-    <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
-        <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
-        <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
-            <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
-        </a>
-    </div>
-    """
-    st.components.v1.html(custom_html, height=80)
+# Inject the custom HTML into Streamlit
+html(custom_html, height=40)
 
 # Load the data
 @st.cache_data
