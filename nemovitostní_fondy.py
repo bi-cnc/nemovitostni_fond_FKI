@@ -747,7 +747,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) and any(filtered_df["Uživatelský výběr"].apply(lambda x: x == False)):
-    st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("Legenda")
     st.markdown("<br>", unsafe_allow_html=True)
     with st.expander(":orange[**Co znamená jaký finanční ukazatel?**]",expanded=True):
