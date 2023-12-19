@@ -370,7 +370,7 @@ vynosWAULT_column = st.column_config.TextColumn(label="WAULT (v letech) 💬", h
 
 pocet_nemov_column = st.column_config.NumberColumn(label="Počet nemovitostí")
 
-nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
+nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="small", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df.set_index('Poskytovatel', inplace=True)
@@ -634,7 +634,7 @@ vynosNAV_column = st.column_config.TextColumn(label="NAV (v mld. Kč) 💬",help
 
 pocet_nemov_column = st.column_config.NumberColumn(label="Počet nemovitostí")
 
-nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="medium", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
+nazev_column = st.column_config.TextColumn(label="Název fondu 💬", width="small", help="📍**Po kliknutí na fond zjistíte další podrobnosti.**")
 rozlozeni_column = st.column_config.TextColumn(label="Rozložení portfolia")
 
 df_retail.set_index('Poskytovatel', inplace=True)
