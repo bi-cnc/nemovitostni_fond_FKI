@@ -433,6 +433,20 @@ else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
 
+height_hack = '''
+<script>
+    var hide_me_list = window.parent.document.querySelectorAll('iframe');
+    for (let i = 0; i < hide_me_list.length; i++) { 
+        if (hide_me_list[i].height == 0) {
+            hide_me_list[i].parentNode.style.height = 0;
+            hide_me_list[i].parentNode.style.marginBottom = '-1rem';
+        };
+    };
+</script>
+'''
+st.components.v1.html(height_hack, height=0)
+
+
 from streamlit.components.v1 import html
 
 # Styling
