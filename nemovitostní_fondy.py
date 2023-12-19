@@ -437,9 +437,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 retail_html = """
 <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
     <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 24px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Retailové fondy</h1>
-    <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
-        <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
-    </a>
 </div>
 """
 
