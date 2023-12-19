@@ -440,6 +440,7 @@ st.markdown("""
 <style>
 .portal-navigator {
     margin: 0; /* Adjust as needed */
+    padding: 0; /* Adjust as needed */
     padding-left: .5em;
     display: flex;
     justify-items: center;
