@@ -29,7 +29,7 @@ with cent_co:
     st.image(logo_image,width=600)
 
 
-st.title("Fondy kvalifikovaných investorů")
+st.header("Fondy kvalifikovaných investorů")
 
 # Load the data
 @st.cache_data
