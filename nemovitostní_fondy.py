@@ -26,7 +26,7 @@ custom_html = """
 """
 
 # Inject the custom HTML into Streamlit
-html(custom_html, height=70)
+html(custom_html, height=100)
 
 
 # Load the data
