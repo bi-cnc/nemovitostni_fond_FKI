@@ -13,6 +13,12 @@ from PIL import Image
 import base64
 import io
 
+st.set_page_config(
+    page_title="Přehled nemovitostních fondů e15",
+    page_icon="✨",
+    layout="wide"
+)
+
 from streamlit.components.v1 import html
 
 # Custom HTML and CSS
