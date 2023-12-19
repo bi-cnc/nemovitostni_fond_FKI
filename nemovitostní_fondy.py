@@ -14,7 +14,7 @@ import base64
 import io
 
 
-st.header("Fondy kvalifikovaných investorů",divider="red")
+st.header("Fondy kvalifikovaných investorů")
 
 # Load the data
 @st.cache_data
