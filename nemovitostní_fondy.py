@@ -434,7 +434,7 @@ else:
 st.markdown("""
     <style>
     .custom-font {
-        font-size: 20px;  # Změňte velikost podle potřeby
+        font-size: 10px;  # Změňte velikost podle potřeby
     }
     </style>
     <div class='custom-font'>
