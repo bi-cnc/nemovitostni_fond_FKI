@@ -433,103 +433,6 @@ else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
 
-height_hack = '''
-<script>
-    var hide_me_list = window.parent.document.querySelectorAll('iframe');
-    for (let i = 0; i < hide_me_list.length; i++) { 
-        if (hide_me_list[i].height == 0) {
-            hide_me_list[i].parentNode.style.height = 0;
-            hide_me_list[i].parentNode.style.marginBottom = '-1rem';
-        };
-    };
-</script>
-'''
-st.components.v1.html(height_hack, height=0)
-
-
-from streamlit.components.v1 import html
-
-# Styling
-st.markdown("""
-<style>
-.portal-navigator {
-    margin: 0; /* Adjust as needed */
-    padding: 0; /* Adjust as needed */
-    padding-left: .5em;
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    color: #404040;
-    height: 1.5em;
-    border-radius: 6px;
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    opacity: 1;
-    z-index: 999;
-    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 2px 10px);
-}
-
-.portal-navigator > a {
-    margin-right: .5em;
-    color: #069;
-    text-decoration: underline;
-    cursor: pointer; /* Přidání kurzoru jako ruky pro odkazy */
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Script to add links
-html("""
-<script>
-function add_navigator_to_portal(doc) {
-    portal = doc.getElementById('portal');
-    observer = new MutationObserver(function(mutations, observer) {
-        let entry = portal.querySelector('.clip-region');
-        if (entry) {
-            let text = entry.textContent;
-            let span = document.createElement('span');
-            span.className = "portal-navigator";
-            if (text.includes("WOOD & Company podfond Retail 💬")) {
-                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/retail-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Jet Industrial Lease 💬")) {
-                span.innerHTML = '<a href="https://www.jetinvestment.cz/fondy-jet/jet-industrial-lease/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("REALIA FUND SICAV, a.s. REALIA Podfond Retail Parks 💬")) {
-                span.innerHTML = '<a href="https://www.avantfunds.cz/cs/fondy/realia-fund-sicav-a-s/realia-podfond-retail-parks/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("WOOD & Company Office 💬")) {
-                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/office-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Silverline Real Estate 💬")) {
-                span.innerHTML = '<a href="https://silverlinere.com/cs" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Fond Českého bydlení  💬")) {
-                span.innerHTML = '<a href="https://www.fondbydleni.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Accolade Industrial Fund A2 Dis (CZK) 💬")) {
-                span.innerHTML = '<a href="https://accolade.eu/domains/accolade.eu/cs/fond?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0CzrdKx3tzR9Qf1ABf2hfJEG-JcTnwooKnt2HdcZf2JlJfluSd37ii28aAphTEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("ZDR Investments Real Estate FKI 💬")) {
-                span.innerHTML = '<a href="https://www.zdrinvestments.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("TRIKAYA nemovitostní fond SICAV, a.s. 💬")) {
-                span.innerHTML = '<a href="https://fond.trikaya.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("Nova Real Estate 💬")) {
-                span.innerHTML = '<a href="https://www.redsidefunds.com/cs/fondy/nova-real-estate" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("DOMOPLAN SICAV, a.s.  💬")) {
-                span.innerHTML = '<a href="https://www.domoplan.eu/cs/investice/domoplan-sicav-a-s-6MDviG" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            }
-            // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
-            span.querySelector('a').setAttribute('onclick', 'window.open(this.href); return false;');
-            cont = entry.parentElement;
-            cont.insertBefore(span, entry);
-            console.log("inserted");
-
-        }
-    });
-    observer.observe(portal, {childList: true});
-};
-add_navigator_to_portal(parent.window.document)
-</script>
-""")
-
-
 ##### Retailove fondy
 st.header("Retailové fondy")
 
@@ -898,6 +801,56 @@ function add_navigator_to_portal(doc) {
 add_navigator_to_portal(parent.window.document)
 </script>
 """)
+
+# Script to add links
+html("""
+<script>
+function add_navigator_to_portal(doc) {
+    portal = doc.getElementById('portal');
+    observer = new MutationObserver(function(mutations, observer) {
+        let entry = portal.querySelector('.clip-region');
+        if (entry) {
+            let text = entry.textContent;
+            let span = document.createElement('span');
+            span.className = "portal-navigator";
+            if (text.includes("WOOD & Company podfond Retail 💬")) {
+                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/retail-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Jet Industrial Lease 💬")) {
+                span.innerHTML = '<a href="https://www.jetinvestment.cz/fondy-jet/jet-industrial-lease/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("REALIA FUND SICAV, a.s. REALIA Podfond Retail Parks 💬")) {
+                span.innerHTML = '<a href="https://www.avantfunds.cz/cs/fondy/realia-fund-sicav-a-s/realia-podfond-retail-parks/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("WOOD & Company Office 💬")) {
+                span.innerHTML = '<a href="https://wood.cz/produkty/fondy/office-podfond/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Silverline Real Estate 💬")) {
+                span.innerHTML = '<a href="https://silverlinere.com/cs" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Fond Českého bydlení  💬")) {
+                span.innerHTML = '<a href="https://www.fondbydleni.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Accolade Industrial Fund A2 Dis (CZK) 💬")) {
+                span.innerHTML = '<a href="https://accolade.eu/domains/accolade.eu/cs/fond?gclid=Cj0KCQjwqP2pBhDMARIsAJQ0CzrdKx3tzR9Qf1ABf2hfJEG-JcTnwooKnt2HdcZf2JlJfluSd37ii28aAphTEALw_wcB" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("ZDR Investments Real Estate FKI 💬")) {
+                span.innerHTML = '<a href="https://www.zdrinvestments.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("TRIKAYA nemovitostní fond SICAV, a.s. 💬")) {
+                span.innerHTML = '<a href="https://fond.trikaya.cz/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("Nova Real Estate 💬")) {
+                span.innerHTML = '<a href="https://www.redsidefunds.com/cs/fondy/nova-real-estate" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            } else if (text.includes("DOMOPLAN SICAV, a.s.  💬")) {
+                span.innerHTML = '<a href="https://www.domoplan.eu/cs/investice/domoplan-sicav-a-s-6MDviG" target="_blank" >Zobrazit podrobnosti o fondu</a>';
+            }
+            // Přidání onclick atributu pro okamžité otevření odkazu při kliknutí
+            span.querySelector('a').setAttribute('onclick', 'window.open(this.href); return false;');
+            cont = entry.parentElement;
+            cont.insertBefore(span, entry);
+            console.log("inserted");
+
+        }
+    });
+    observer.observe(portal, {childList: true});
+};
+add_navigator_to_portal(parent.window.document)
+</script>
+""")
+
+
 
 if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) and any(filtered_df["Uživatelský výběr"].apply(lambda x: x == False)):
     st.subheader("Legenda")
