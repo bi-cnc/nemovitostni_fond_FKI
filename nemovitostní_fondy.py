@@ -13,11 +13,9 @@ from PIL import Image
 import base64
 import io
 
-from streamlit.components.v1 import html
-
 # Custom HTML for fullscreen symbol and link
 fullscreen_html = """
-<div style="position: absolute; top: 40px; right: 0; padding: 10px;">
+<div style="position: absolute; top: 10px; right: 0; padding: 10px;">
     <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
         <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
     </a>
