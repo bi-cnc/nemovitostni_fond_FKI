@@ -431,6 +431,7 @@ if not filtered_df.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
+st.markdown("💢", unsafe_allow_html=True)
 
 ##### Retailove fondy
 st.markdown("<br>", unsafe_allow_html=True)
