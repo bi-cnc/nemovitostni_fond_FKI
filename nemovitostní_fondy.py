@@ -13,6 +13,8 @@ from PIL import Image
 import base64
 import io
 
+from streamlit.components.v1 import html
+
 # Custom HTML and CSS
 custom_html = """
 <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
