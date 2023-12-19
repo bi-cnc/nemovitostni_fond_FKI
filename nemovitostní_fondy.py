@@ -14,10 +14,9 @@ import base64
 import io
 
 from streamlit.components.v1 import html
-# Custom HTML and CSS
 custom_html = """
 <div style="display: flex; align-items: center; justify-content: space-between;">
-    <h1 class="st-ae" style="font-size: 1.5em; font-weight: bold;">Fondy kvalifikovaných investorů</h1>
+    <h1 style="margin: 0; font-size: 1.6em; font-weight: 600;">Fondy kvalifikovaných investorů</h1>
     <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
         <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
     </a>
@@ -26,6 +25,7 @@ custom_html = """
 
 # Inject the custom HTML into Streamlit
 html(custom_html)
+
 
 
 # Load the data
