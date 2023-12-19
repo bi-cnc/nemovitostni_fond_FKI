@@ -502,8 +502,8 @@ add_navigator_to_portal(parent.window.document)
 
 ##### Retailove fondy
 
-st.title("")
-st.title("Retailové fondy")
+st.markdown("<br>", unsafe_allow_html=True)
+st.header("Retailové fondy")
 
 # Load the data
 @st.cache_data
@@ -872,13 +872,13 @@ add_navigator_to_portal(parent.window.document)
 """)
 
 if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) and any(filtered_df["Uživatelský výběr"].apply(lambda x: x == False)):
-    st.title("")
-    st.title("")
-    st.title("")
-    st.title("")
-    st.title("")
-    st.title("Legenda")
-    st.title("")
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.subheader("Legenda")
+    st.markdown("<br>", unsafe_allow_html=True)
     with st.expander(":orange[**Co znamená jaký finanční ukazatel?**]",expanded=True):
         st.write("")
         st.write("📍**NAV (AUM)**: Hodnota majetku fondu ukazuje na robustnost a vloženou důvěru investorů.")
