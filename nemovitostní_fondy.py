@@ -419,6 +419,9 @@ if not filtered_df.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
+
+st.markdown("TEraffdfdfdf", unsafe_allow_html=True)
+
 from streamlit.components.v1 import html
 
 # Styling
