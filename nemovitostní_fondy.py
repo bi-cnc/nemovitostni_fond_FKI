@@ -15,22 +15,17 @@ import io
 
 from streamlit.components.v1 import html
 
-# Use columns to position the header and fullscreen icon on the same line
-col1, col2 = st.columns([0.9, 0.1])  # Adjust the ratio as needed
+# Custom HTML for fullscreen symbol and link
+fullscreen_html = """
+<div style="position: absolute; top: 10px; right: 0; padding: 10px;">
+    <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
+        <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
+    </a>
+</div>
+"""
 
-with col1:
-    st.header("Fondy kvalifikovaných investorů")
-
-with col2:
-    # Custom HTML for fullscreen symbol
-    fullscreen_html = """
-    <div>
-        <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
-            <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
-        </a>
-    </div>
-    """
-    html(fullscreen_html)
+# Inject the HTML into the Streamlit app
+html(fullscreen_html, height=50)
 
 
 st.header("Fondy kvalifikovaných investorů")
