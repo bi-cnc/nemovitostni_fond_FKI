@@ -442,6 +442,8 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
+st.markdown("<br>", unsafe_allow_html=True)
+
 ##### Retailove fondy
 st.markdown("<br>", unsafe_allow_html=True)
 retail_html = """
@@ -727,6 +729,18 @@ if not filtered_df_retail.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
+st.markdown("""
+    <style>
+    .custom-font {
+        font-size: 14px;  # Změňte velikost podle potřeby
+    }
+    </style>
+    <div class='custom-font'>
+        💢 výnos menší než 5 % 🔸 výnos mezi 5 % až 10 % 🔹 výnos nad 10 % ▫️ neznámý výnos
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 if any(filtered_df_retail["Uživatelský výběr"].apply(lambda x: x == False)) and any(filtered_df["Uživatelský výběr"].apply(lambda x: x == False)):
     st.markdown("<br>", unsafe_allow_html=True)
