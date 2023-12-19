@@ -355,7 +355,7 @@ df["NAV (v mld. Kč)"] = df["NAV "].apply(lambda x: "- - -" if pd.isna(x) else f
 
 
 # Configure the image column
-image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
+image_column = st.column_config.ImageColumn(label="Poskytovatel", width="small")
 min_invest_column = st.column_config.TextColumn(help="📍**Minimální nutná částka pro vstup do fondu.** Klíčové zejména u FKI, kde je většinou 1 mil. Kč při splnění testu vhodnosti, ale někdy i 2 a více milionů.")
 poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené, ale pro finální výnos zásadní jsou poplatky.** Je třeba znát podmínky pro výstupní poplatky v různých časových horizontech – zejména ty může investor ovlivnit.")
 
@@ -623,7 +623,7 @@ df_retail["NAV (v mld. Kč)"] = df_retail["NAV "].apply(lambda x: "- - -" if pd.
 
 
 # Configure the image column
-image_column = st.column_config.ImageColumn(label="Poskytovatel", width="medium")
+image_column = st.column_config.ImageColumn(label="Poskytovatel", width="small")
 rok_vzniku_fondu_column = st.column_config.NumberColumn(format="%d")
 min_invest_column = st.column_config.TextColumn(help="📍**Minimální nutná částka pro vstup do fondu.** Klíčové zejména u FKI, kde je většinou 1 mil. Kč při splnění testu vhodnosti, ale někdy i 2 a více milionů.")
 poplatky_column = st.column_config.TextColumn(help="📍**Často přehlížené, ale pro finální výnos zásadní jsou poplatky.** Je třeba znát podmínky pro výstupní poplatky v různých časových horizontech – zejména ty může investor ovlivnit.")
