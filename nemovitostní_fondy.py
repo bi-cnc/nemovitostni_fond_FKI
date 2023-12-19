@@ -215,8 +215,8 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         available_columns = [col for col in df.columns if col not in columns_to_exclude]
         to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns, placeholder="Vybrat finanční ukazatel")
 
-        if len(to_filter_columns) > 1:
-            st.warning("V tomto filtru můžete vybrat pouze 1 finanční ukazatel. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
+        if len(to_filter_columns) > 2:
+            st.warning("V tomto filtru můžete vybrat pouze 2 finanční ukazatele. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
             to_filter_columns = []  # Reset the selection
 
         for column in to_filter_columns:
@@ -521,8 +521,8 @@ def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
             available_columns = [col for col in df_retail.columns if col not in columns_to_exclude]
             to_filter_columns = st.multiselect("Filtrovat přehled podle:", available_columns, placeholder="Vybrat finanční ukazatel")
 
-            if len(to_filter_columns) > 1:
-                st.warning("V tomto filtru můžete vybrat pouze 1 finanční ukazatel. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
+            if len(to_filter_columns) > 2:
+                st.warning("V tomto filtru můžete vybrat pouze 2 finanční ukazatele. Rozsáhlejší filtrování je dostupné ve fullscreenu (⛶) aplikace.")
                 to_filter_columns = []  # Reset the selection
             
             for column in to_filter_columns:
