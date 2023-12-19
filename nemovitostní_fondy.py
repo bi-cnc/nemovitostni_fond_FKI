@@ -15,6 +15,8 @@ import io
 
 from streamlit.components.v1 import html
 
+st.header("Fondy kvalifikovaných investorů")
+
 # Custom HTML for fullscreen symbol and link
 fullscreen_html = """
 <div style="position: absolute; top: 10px; right: 0; padding: 10px;">
@@ -27,10 +29,6 @@ fullscreen_html = """
 # Inject the HTML into the Streamlit app
 html(fullscreen_html, height=50)
 
-
-st.header("Fondy kvalifikovaných investorů")
-
-st.header("Fondy kvalifikovaných investorů")
 
 # Load the data
 @st.cache_data
