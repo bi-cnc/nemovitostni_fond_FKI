@@ -431,7 +431,7 @@ if not filtered_df.empty:
 else:
     st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
-st.markdown("💢", unsafe_allow_html=True)
+st.markdown("💢 výnos menší než 5 % 🔸 výnos mezi 5 % až 10 % 🔹 výnos nad 10 % ▫️ neznámý výnos", unsafe_allow_html=True)
 
 ##### Retailove fondy
 st.markdown("<br>", unsafe_allow_html=True)
