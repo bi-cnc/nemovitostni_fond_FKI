@@ -15,18 +15,51 @@ import io
 
 from streamlit.components.v1 import html
 
-# Custom HTML and CSS
-custom_html = """
-<div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
-    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
-    <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
-        <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
-    </a>
-</div>
-"""
+# Importing required libraries
+import streamlit as st
+from streamlit.components.v1 import html
 
-# Inject the custom HTML into Streamlit
-html(custom_html, height=80)
+# Function to detect device type (desktop or mobile)
+def detect_device():
+    # JavaScript code to detect device type
+    device_detection_script = """
+    <script type="text/javascript">
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var element = document.getElementById('deviceType');
+    if (isMobile) {
+        element.innerHTML = 'Mobile';
+    } else {
+        element.innerHTML = 'Desktop';
+    }
+    </script>
+    """
+    # Placeholder to display device type
+    st.write('<span id="deviceType" style="display: none;"></span>', unsafe_allow_html=True)
+    # Running the JavaScript code
+    html(device_detection_script)
+
+    # Extracting the device type from the placeholder
+    device_type = st.session_state.deviceType if 'deviceType' in st.session_state else None
+    return device_type
+
+# Detecting the device
+device_type = detect_device()
+
+# Displaying different content based on the device type
+if device_type == 'Desktop':
+    # Display the fullscreen icon if on Desktop
+    custom_html = """
+    <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
+        <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
+        <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
+            <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
+        </a>
+    </div>
+    """
+    html(custom_html, height=80)
+else:
+    # Display only the text if on Mobile
+    st.markdown("<h1 style='font-family: IBM Plex Sans, sans-serif; font-size: 26px; font-weight: 600; color: #262730;'>Fondy kvalifikovaných investorů</h1>", unsafe_allow_html=True)
 
 
 # Load the data
