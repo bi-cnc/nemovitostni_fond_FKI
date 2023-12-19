@@ -439,6 +439,7 @@ from streamlit.components.v1 import html
 st.markdown("""
 <style>
 .portal-navigator {
+    margin: 0; /* Adjust as needed */
     padding-left: .5em;
     display: flex;
     justify-items: center;
