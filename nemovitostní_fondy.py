@@ -13,11 +13,10 @@ from PIL import Image
 import base64
 import io
 
-from streamlit.components.v1 import html
 # Custom HTML and CSS
 custom_html = """
 <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: space-between;">
-    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 20px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 26px; font-weight: 600; color: #262730; margin-right: 30px; margin: 0px;">Fondy kvalifikovaných investorů</h1>
     <a href="https://fullscreen-fki.streamlit.app/" target="_blank" title="Otevři fullscreen aplikace">
         <img src="https://cdn1.iconfinder.com/data/icons/material-core/14/fullscreen-512.png" alt="Fullscreen" style="height: 30px; width: 30px;">
     </a>
@@ -26,9 +25,6 @@ custom_html = """
 
 # Inject the custom HTML into Streamlit
 html(custom_html, height=40)
-
-# ... (rest of your code for displaying the dataframe)
-
 
 
 # Load the data
