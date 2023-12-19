@@ -399,6 +399,26 @@ filtered_df = filtered_df[new_order]
 
 filtered_df.info()
 
+if not filtered_df.empty:
+    st.dataframe(filtered_df.drop(columns=["Rozložení portfolia","Výnos 2022 ","Výnos 2021 ","Výnos 2020 ","Výnos od založení ","TER ","LTV ","YIELD ","WAULT ","NAV ","Uživatelský výběr"]), hide_index=True, 
+                 column_config={"Poskytovatel": image_column,
+                                "TER":vynosTER_column,
+                                "LTV":vynosLTV_column,
+                                "YIELD": vynosYIELD_column,
+                                "Počet nemovitostí":pocet_nemov_column,
+                                "Název fondu":nazev_column,
+                                "Portfolio":rozlozeni_column,
+                                "NAV (v mld. Kč)":vynosNAV_column,
+                                "WAULT":vynosWAULT_column,
+                                "Min. investice":min_invest_column,
+                                "Vstupní poplatek":poplatky_column,
+                                "Manažerský poplatek":poplatky_column,
+                                "Výkonnostní poplatek":poplatky_column,
+                                "Výstupní poplatek":poplatky_column,
+                                }, height=428)
+else:
+    st.warning("Žádná data neodpovídají zvoleným filtrům.")
+
 
 from streamlit.components.v1 import html
 
@@ -479,27 +499,6 @@ function add_navigator_to_portal(doc) {
 add_navigator_to_portal(parent.window.document)
 </script>
 """)
-
-
-if not filtered_df.empty:
-    st.dataframe(filtered_df.drop(columns=["Rozložení portfolia","Výnos 2022 ","Výnos 2021 ","Výnos 2020 ","Výnos od založení ","TER ","LTV ","YIELD ","WAULT ","NAV ","Uživatelský výběr"]), hide_index=True, 
-                 column_config={"Poskytovatel": image_column,
-                                "TER":vynosTER_column,
-                                "LTV":vynosLTV_column,
-                                "YIELD": vynosYIELD_column,
-                                "Počet nemovitostí":pocet_nemov_column,
-                                "Název fondu":nazev_column,
-                                "Portfolio":rozlozeni_column,
-                                "NAV (v mld. Kč)":vynosNAV_column,
-                                "WAULT":vynosWAULT_column,
-                                "Min. investice":min_invest_column,
-                                "Vstupní poplatek":poplatky_column,
-                                "Manažerský poplatek":poplatky_column,
-                                "Výkonnostní poplatek":poplatky_column,
-                                "Výstupní poplatek":poplatky_column,
-                                }, height=428)
-else:
-    st.warning("Žádná data neodpovídají zvoleným filtrům.")
 
 
 ##### Retailove fondy
