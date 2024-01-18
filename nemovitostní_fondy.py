@@ -47,6 +47,7 @@ df.rename(columns={'Rozložení portfolia':"Portfolio"},inplace=True)
 df["Název fondu"] = df["Název fondu"] + " 💬"
 
 # Convert image to Base64
+@st.cache_data
 def image_to_base64(img_path, output_size=(441, 100)):
     # Open an image file
     with Image.open(img_path) as img:
@@ -71,7 +72,7 @@ df["Výstupní poplatek"].fillna("- - -", inplace=True)
 df["Lhůta pro zpětný odkup"].fillna("- - -", inplace=True)
 df["Portfolio"].fillna("- - -", inplace=True)
 
-
+@st.cache_data
 def convert_yield_to_float(yield_value):
     if yield_value == "- - -":
         return -1
@@ -91,7 +92,7 @@ def convert_yield_to_float(yield_value):
             return float(yield_value)
     return None
 
-
+@st.cache_data
 def extract_number_from_string(s):
     numbers = re.findall(r"(\d+)", s)
     if numbers:
@@ -107,7 +108,7 @@ sorted_yield_values = sorted(df["Cílený roční výnos"].unique(), key=convert
 
 
 import re
-
+@st.cache_data
 def dominant_category(text):
     # Vytvořte slovník s klíčovými slovy pro každou kategorii
     categories = {
@@ -151,7 +152,7 @@ def dominant_category(text):
 
 df["Rozložení portfolia"] = df["Portfolio"].apply(dominant_category)
 
-
+@st.cache_data
 def convert_fee_to_float_simple(fee_value):
     if isinstance(fee_value, str):
         # Ořízne řetězec na základě první závorky (pokud existuje)
@@ -183,7 +184,7 @@ df_original = df.copy()
 
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
 
-
+@st.cache_data
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
     Adds a UI on top of a dataframe to let viewers filter columns
@@ -351,6 +352,7 @@ df.rename(columns={"Výnos 2022 (v %)":"Výnos 2022 ","Výnos 2021 (v %)":"Výno
 
 df.info()
 
+@st.cache_data
 def get_emoji(value):
     if value >= 10:
         return "🔹"
@@ -502,7 +504,7 @@ df_retail['Uživatelský výběr'] = False
 
 df_retail_original = df_retail.copy()
 
-
+@st.cache_data
 def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
     """
     Adds a UI on top of a dataframe to let viewers filter columns
@@ -661,6 +663,7 @@ df_retail.rename(columns={"Výnos 2022 (v %)":"Výnos 2022 ","Výnos 2021 (v %)"
 
 df_retail.info()
 
+@st.cache_data
 def get_emoji(value):
     if value >= 10:
         return "🔹"
