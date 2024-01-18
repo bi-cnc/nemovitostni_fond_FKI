@@ -184,7 +184,6 @@ df_original = df.copy()
 
 fee_columns = ["Vstupní poplatek", "Manažerský poplatek", "Výkonnostní poplatek", "Výstupní poplatek"]
 
-@st.cache_data
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
     Adds a UI on top of a dataframe to let viewers filter columns
@@ -504,7 +503,6 @@ df_retail['Uživatelský výběr'] = False
 
 df_retail_original = df_retail.copy()
 
-@st.cache_data
 def filter_dataframe(df_retail: pd.DataFrame) -> pd.DataFrame:
     """
     Adds a UI on top of a dataframe to let viewers filter columns
