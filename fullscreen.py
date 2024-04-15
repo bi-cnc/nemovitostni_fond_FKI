@@ -800,7 +800,7 @@ function add_navigator_to_portal(doc) {
                 span.innerHTML = '<a href="https://www.reico.cz/cs/cs-nemovitostni-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("REICO ČS Long Lease  💬")) {
                 span.innerHTML = '<a href="https://www.reico.cz/cs/long-lease-fond" target="_blank" >Zobrazit podrobnosti o fondu</a>';
-            } else if (text.includes("ATRIS investiční společnost, a.s. 💬")) {
+            } else if (text.includes("ATRIS investiční společnost 💬")) {
                 span.innerHTML = '<a href="https://www.atrisinvest.cz/fond-realita/" target="_blank" >Zobrazit podrobnosti o fondu</a>';
             } else if (text.includes("Amundi Realti  💬")) {
                 span.innerHTML = '<a href="https://www.amundi.cz/produkty" target="_blank" >Zobrazit podrobnosti o fondu</a>';
